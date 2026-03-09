@@ -1,0 +1,75 @@
+{
+  "name": "worker",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/worker/src",
+  "projectType": "application",
+  "targets": {
+      "build-app": {
+          "executor": "@nx/webpack:webpack",
+          "outputs": ["{options.outputPath}"],
+          "defaultConfiguration": "production",
+          "options": {
+              "target": "node",
+              "compiler": "tsc",
+              "sourceMap": true,
+              "outputPath": "dist/apps/worker",
+              "main": "apps/worker/src/main.ts",
+              "tsConfig": "apps/worker/tsconfig.app.json",
+              "assets": ["apps/worker/src/assets"],
+              "webpackConfig": "apps/worker/webpack.config.js"
+          },
+          "configurations": {
+              "development": {},
+              "production": {}
+          }
+      },
+      "package": {
+          "executor": "./tools/executors/package:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+              "outputPath": "dist/apps/worker",
+              "omit": [
+                  "^@angular",
+                  "zone.js",
+                  "ngx-color-picker",
+                  "codejar",
+                  "apollo-angular",
+                  "@apollo/client"
+              ],
+              "include": ["bullmq", "^pg$", "aws-sdk", "@nestjs/terminus"]
+          }
+      },
+      "build": {
+          "executor": "nx:run-commands",
+          "options": {
+              "commands": ["nx run worker:build-app", "nx run worker:package"],
+              "parallel": false
+          }
+      },
+      "prepare-deployment": {
+          "executor": "nx:run-commands",
+          "options": {
+              "cwd": "dist/apps/worker",
+              "commands": ["npm install"]
+          }
+      },
+      "serve": {
+          "executor": "@nx/js:node",
+          "options": {
+              "buildTarget": "worker:build-app"
+          }
+      },
+      "lint": {
+          "executor": "@nx/eslint:lint",
+          "outputs": ["{options.outputFile}"]
+      },
+      "test": {
+          "executor": "@nx/jest:jest",
+          "outputs": ["{workspaceRoot}/coverage/apps/worker"],
+          "options": {
+              "jestConfig": "apps/worker/jest.config.ts"
+          }
+      }
+  },
+  "tags": []
+}

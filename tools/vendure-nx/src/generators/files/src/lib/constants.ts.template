@@ -1,0 +1,2 @@
+export const loggerCtx = '<%= titlecase(name) %>Plugin';
+export const <%= constantcase(name) %>_PLUGIN_OPTIONS = Symbol('<%= constantcase(name) %>_PLUGIN_OPTIONS');
