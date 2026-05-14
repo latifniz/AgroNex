@@ -4,6 +4,8 @@ import {
   LogLevel,
   DefaultLogger,
   mergeConfig,
+  ProductService,
+  RequestContextService,
 } from '@vendure/core';
 import { populate } from '@vendure/core/cli';
 import { config } from '@vendure-nx/util-config';
@@ -19,18 +21,37 @@ const mergedConfig = mergeConfig(config, {
   plugins: (config.plugins || [])
     .filter((p: any) => {
       const name = typeof p === 'function' ? p.name : '';
-      // Skip the BullMQ plugin, as it is not needed for the populate script and can cause issues if Redis is not running
       return !name.includes('BullMQ');
     })
     .concat(DefaultJobQueuePlugin),
 });
 
-populate(() => bootstrap(mergedConfig), initialData, PRODUCTS_CSV_PATH)
-  .then(app => app.close())
-  .then(() => {
+async function main() {
+  // Bootstrap first just to check
+  const app = await bootstrap(mergedConfig);
+
+  const productService = app.get(ProductService);
+  const ctxService = app.get(RequestContextService);
+  const ctx = await ctxService.create({ apiType: 'admin' });
+
+  const { totalItems } = await productService.findAll(ctx);
+
+  if (totalItems > 0) {
+    console.log(`✅ Database already has ${totalItems} products. Skipping populate.`);
+    await app.close();
     process.exit(0);
-  })
-  .catch(err => {
-    console.error(err);
-    process.exit(1);
-  });
+  }
+
+  await app.close();
+
+  // Now actually populate
+  await populate(() => bootstrap(mergedConfig), initialData, PRODUCTS_CSV_PATH)
+    .then(app => app.close());
+
+  process.exit(0);
+}
+
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});

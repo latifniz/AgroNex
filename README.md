@@ -1,190 +1,168 @@
+# AgroNex — Vendure Nx B2B Agri Commerce Monorepo
 
-
-# ElectroHub - Vendure Nx E-Commerce Monorepo
-
-**ElectroHub** is a medium-size electronics e-commerce store built with [Vendure](https://www.vendure.io), a headless commerce framework.
-This Nx-integrated monorepo combines the power of Vendure with custom plugins, a React-based admin dashboard, and a Next.js storefront to create a production-ready e-commerce platform.
-
----
-
-## 🏗 Monorepo Structure
-
-The repository follows the [Nx integrated repo](https://nx.dev/getting-started/integrated-repo-tutorial) structure:
-
-### **Apps**
-
-1. **server**
-   Vendure HTTP server serving both **admin API** and **shop API**. This is the core of your e-commerce platform.
-
-2. **worker**
-   Background job processor (powered by BullMQ) for tasks like sending emails, generating invoices, or processing orders asynchronously.
-
-3. **admin-dashboard**
-   React-based admin UI built with Vite and [`@vendure/dashboard`](https://www.vendure.io/docs/guides/dashboard/). Manage products, orders, customers, and more.
-
-4. **storefront**
-   Next.js-based storefront (optional) showing products, collections, and handling customer checkout. Fully customizable and can be extended with your own UI.
-
-### **Libs**
-
-* **util-config**: Centralized Vendure configuration used by the server and worker.
-* **util-testing**: Utilities for end-to-end testing.
-* **plugin-***: Vendure plugins created as Nx libs. Extend core functionality (custom fields, workflows, integrations).
-
-### **Other Directories**
-
-* **static**: Static assets like email templates or default images.
-* **tools**: Nx executors and generators for plugins, code generation, and build tasks.
+**AgroNex** is a B2B agri-input commerce platform built with [Vendure](https://www.vendure.io), a headless commerce framework.
+It models how distributors and wholesalers sell agri products (seeds, fertilizers, pesticides, equipment) to dealers and retailers.
+Built as an Nx integrated monorepo — primarily a deep-dive learning project for Vendure, with a structure close enough to production that it could become one.
 
 ---
 
-## 🛠 Tech Stack
+## Domain Model
 
-* **Backend / E-commerce:** Vendure (NestJS, GraphQL, Plugins)
-* **Frontend:** Next.js (storefront, optional)
-* **Database:** PostgreSQL (production) / SQLite (dev)
-* **Tools:** Node.js, Nx workspace, npm
+**Who sells what to whom:**
+
+```
+Manufacturer / Importer
+       ↓
+   Distributor  (AgroNex platform users — B2B sellers)
+       ↓
+  Sub-dealer / Retailer  (buyers on the platform)
+       ↓
+      Farmer
+```
+
+**Product categories:**
+
+- Seeds (variety, pack size, crop type, season)
+- Fertilizers (NPK type, weight, formulation)
+- Pesticides (active ingredient, crop target, registration no.)
+- Farm equipment & tools
 
 ---
 
-## 📦 Features
+## Monorepo Structure
 
-* Product catalog with **variants** and **attributes**
-* Collections & facets (filters)
-* Inventory management (stock locations & levels)
-* Order lifecycle simulation (cart → payment → fulfillment)
-* Customer management & addresses
-* Custom fields for electronics (e.g., warranty, battery capacity)
-* Plugins for business logic (e.g., warranty notifications, high-value order alerts)
-* Multi-channel support (Pakistan, UAE, Wholesale)
-* Shipping & payment workflow simulation
+```
+apps/
+  server/           # Vendure HTTP server (admin-api + shop-api)
+  worker/           # BullMQ job queue worker
+  admin-dashboard/  # React admin UI (@vendure/dashboard)
+  storefront/       # Next.js B2B storefront (buyer portal)
+
+libs/
+  util-config/      # Shared VendureConfig (server + worker)
+  util-testing/     # E2E test utilities
+  plugin-*/         # Custom Vendure plugins (see below)
+
+tools/
+  executors/        # Custom Nx executors
+  vendure-nx/       # Plugin scaffold generator
+```
 
 ---
 
-## 🚀 Development Setup
+## Plugins (Planned)
 
-1. **Clone the repository**:
+| Plugin | Purpose |
+|---|---|
+| `plugin-bulk-pricing` | Tiered pricing based on order quantity |
+| `plugin-credit-limit` | Per-customer credit limits for B2B |
+| `plugin-min-order-qty` | Minimum order quantity per product/variant |
+| `plugin-territory` | Assign distributors to geographic territories |
+| `plugin-agri-fields` | Custom fields: crop suitability, season, reg. no. |
 
-```bash
-git clone https://github.com/latifniz/electrohub-vendure.git
-cd electrohub-vendure
-```
+---
 
-2. **Install dependencies**:
+## Channels (Multi-store)
 
-```bash
-npm install
-```
+| Channel | Purpose |
+|---|---|
+| Pakistan Wholesale | Bulk pricing in PKR |
+| Pakistan Retail | Standard dealer pricing |
+| Export | USD pricing for cross-border |
 
-3. **Configure environment variables**:
+---
 
-```bash
-cp .env.example .env
-```
+## Tech Stack
 
-Set connection details for Postgres, Redis, and optionally MinIO.
+- **Backend / Commerce:** Vendure v3.x (NestJS, GraphQL, TypeORM)
+- **Frontend:** Next.js (buyer portal)
+- **Database:** PostgreSQL (prod) / SQLite (tests)
+- **Queue:** BullMQ + Redis
+- **Storage:** MinIO (assets)
+- **Tooling:** Nx 20, Node 22, npm
 
-4. **Start services**:
+---
 
-```bash
-docker-compose up -d
-```
+## Development Setup
 
-5. **Populate database**:
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run db:populate
-```
+2. **Configure environment:**
+   ```bash
+   cp .env.example .env
+   ```
 
-6. **Run development servers**:
+3. **Start infrastructure:**
+   ```bash
+   docker-compose up -d
+   ```
 
-```bash
-npm run dev          # Server + Worker
-npm run dev:dashboard # Admin dashboard
-npm run dev:storefront # Optional storefront
-```
+4. **Populate database:**
+   ```bash
+   npm run db:populate
+   ```
 
-7. Open Admin UI: [http://localhost:3000/admin](http://localhost:3000/admin)
+5. **Run development servers:**
+   ```bash
+   npm run dev           # Server + Worker
+   npm run dev:dashboard # Admin dashboard (Vite HMR)
+   ```
+
+6. Open Admin UI: [http://localhost:3000/admin](http://localhost:3000/admin)
    Login: `admin@vendure.io` / `superadmin`
 
 ---
 
-### Optional Commands
-
-* `npm run dev:server` → Only start the server
-* `npm run dev:worker` → Only start the worker
-* `npm run dev:dashboard` → Hot-reload dashboard
-* `npm run dev:storefront` → Start storefront
-
----
-
-## ⚡ Database Migrations
-
-To create migrations after modifying entities or plugins:
+## Common Commands
 
 ```bash
-npx nx run server:migration <migration-name>
-```
-
-Migrations are stored in: `apps/server/migrations`
-Commit migration files to source control for production deploys.
-
----
-
-## 🔌 Extending Vendure
-
-* **Plugins:** Add new functionality via Nx libs.
-* **Custom entities:** Extend database schema for electronics-specific data.
-* **Event hooks & workflows:** Implement custom order, shipping, or payment logic.
-* **Resolvers:** Add custom GraphQL API endpoints.
-
-Example generator:
-
-```bash
-nx g vendure-nx:vendure-plugin-generator --name=WarrantyPlugin --uiExtension=true
+npm run dev                        # Server + Worker
+npm run dev:dashboard              # Admin dashboard
+npx nx run server:migration <name> # Create migration
+npx nx test server                 # Run server tests
+npx nx lint server                 # Lint
+nx g vendure-nx:vendure-plugin-generator --name=BulkPricing --uiExtension=true
 ```
 
 ---
 
-## 📸 Screenshots / Demo
+## Updating Vendure
 
-*(Add screenshots of Admin UI, storefront pages, product catalog, etc.)*
+This project consumes Vendure as npm packages. To upgrade:
 
----
+```bash
+npm install @vendure/core@latest \
+  @vendure/dashboard@latest \
+  @vendure/email-plugin@latest \
+  @vendure/job-queue-plugin@latest \
+  @vendure/asset-server-plugin@latest \
+  @vendure/payments-plugin@latest
 
-## 🎯 Learning Goals
+# Then generate and run any required migrations
+npx nx run server:migration post-upgrade
+npm run dev
+```
 
-* Master Vendure architecture (Server, Admin UI, GraphQL API)
-* Build realistic product catalogs with variants
-* Manage inventory and orders
-* Extend Vendure with custom fields, plugins, and workflows
-* Learn multi-channel commerce
-* Integrate shipping & payment workflows
-
----
-
-## 🔗 Resources
-
-* [Vendure Documentation](https://www.vendure.io/docs/)
-* [Vendure GitHub](https://github.com/vendurehq/vendure)
-* [Next.js](https://nextjs.org/)
+Check the [Vendure changelog](https://github.com/vendure-ecommerce/vendure/blob/master/CHANGELOG.md) before upgrading.
 
 ---
 
-## ⚡ Roadmap
+## Learning Roadmap
 
-1. Core setup & first products
-2. Real product catalog (variants, collections, filters)
-3. Inventory management
-4. Orders & customers
-5. Custom fields
-6. Plugins (warranty, notifications)
-7. Multi-channel commerce
-8. External integrations (shipping, payment, ERP simulation)
+1. Core setup — server, admin UI, GraphQL API basics
+2. Agri product catalog — variants, facets, collections
+3. Inventory — stock locations (warehouse by region), stock levels
+4. Orders & customers — B2B order lifecycle
+5. Custom fields — crop type, season, registration numbers
+6. First plugin — bulk pricing or credit limit
+7. Multi-channel — wholesale vs retail pricing
+8. External integrations — shipping carriers, payment gateways
 
 ---
 
-## 📄 License
+## License
 
-MIT License
-
+MIT

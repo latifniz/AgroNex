@@ -6,6 +6,9 @@ dist
 tmp
 /out-tsc
 
+my_notes.txt
+roadmap.txt
+
 # dependencies
 node_modules
 
@@ -50,3 +53,7 @@ libs/**/e2e/__data__/*.sqlite
 # Dashboard temp/generated files
 apps/admin-dashboard/__vendure-dashboard-temp
 apps/admin-dashboard/src/gql
+
+.nx/polygraph
+.claude/worktrees
+.claude/settings.local.json

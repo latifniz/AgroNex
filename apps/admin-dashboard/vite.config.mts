@@ -21,6 +21,7 @@ export default defineConfig({
       },
       gqlOutputPath: join(__dirname,'./src/gql'),
       pathAdapter: {
+        sourceRoot: join(__dirname, '../../libs'),
         getCompiledConfigPath: ({
           inputRootDir,
           outputPath,
