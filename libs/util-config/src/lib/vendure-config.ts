@@ -31,7 +31,7 @@ export const config: VendureConfig = {
     shopApiPath: 'shop-api',
   },
   authOptions: {
-    requireVerification: true,
+    requireVerification: false,
     tokenMethod: ['bearer', process.env.COOKIE_SECRET ? 'cookie' : undefined],
     cookieOptions: {
       secret: process.env.COOKIE_SECRET,

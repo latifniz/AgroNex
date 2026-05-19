@@ -8,6 +8,8 @@ tmp
 
 my_notes.txt
 roadmap.txt
+progress.txt
+vendurebugs.txt
 
 # dependencies
 node_modules

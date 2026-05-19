@@ -3,35 +3,25 @@ import { dummyPaymentHandler, InitialData } from '@vendure/core';
 
 export const initialData: InitialData = {
   defaultLanguage: LanguageCode.en,
-  defaultZone: 'Europe',
+  defaultZone: 'International',
   taxRates: [
-    { name: 'Standard Tax', percentage: 20 },
-    { name: 'Reduced Tax', percentage: 10 },
-    { name: 'Zero Tax', percentage: 0 },
+    { name: 'Standard Tax', percentage: 0 },
   ],
   shippingMethods: [
-    { name: 'Standard Shipping', price: 500 },
-    { name: 'Express Shipping', price: 1000 },
+    { name: 'Standard Shipping', price: 1500 },
+    { name: 'Express Shipping', price: 3500 },
   ],
   countries: [
-    { name: 'Australia', code: 'AU', zone: 'Oceania' },
-    { name: 'Austria', code: 'AT', zone: 'Europe' },
-    { name: 'Canada', code: 'CA', zone: 'Americas' },
+    { name: 'Pakistan', code: 'PK', zone: 'Asia' },
+    { name: 'United States of America', code: 'US', zone: 'International' },
+    { name: 'United Kingdom', code: 'GB', zone: 'International' },
+    { name: 'United Arab Emirates', code: 'AE', zone: 'International' },
+    { name: 'Saudi Arabia', code: 'SA', zone: 'International' },
     { name: 'China', code: 'CN', zone: 'Asia' },
-    { name: 'South Africa', code: 'ZA', zone: 'Africa' },
-    { name: 'United Kingdom', code: 'GB', zone: 'Europe' },
-    { name: 'United States of America', code: 'US', zone: 'Americas' },
+    { name: 'India', code: 'IN', zone: 'Asia' },
+    { name: 'Canada', code: 'CA', zone: 'International' },
+    { name: 'Australia', code: 'AU', zone: 'International' },
   ],
-  collections: [
-    {
-      name: 'Plants',
-      filters: [
-        {
-          code: 'facet-value-filter',
-          args: { facetValueNames: ['plants'], containsAny: false },
-        },
-      ],
-    },
-  ],
+  collections: [],
   paymentMethods: [],
 };
