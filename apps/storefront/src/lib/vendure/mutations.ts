@@ -33,6 +33,11 @@ export const AddToCartMutation = graphql(`
                     quantity
                 }
             }
+            ... on InsufficientStockError {
+                errorCode
+                message
+                quantityAvailable
+            }
             ... on ErrorResult {
                 errorCode
                 message
@@ -66,6 +71,15 @@ export const AdjustCartItemMutation = graphql(`
                 id
                 code
                 totalQuantity
+            }
+            ... on InsufficientStockError {
+                errorCode
+                message
+                quantityAvailable
+                order {
+                    id
+                    totalQuantity
+                }
             }
             ... on ErrorResult {
                 errorCode

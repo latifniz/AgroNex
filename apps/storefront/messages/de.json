@@ -425,18 +425,18 @@
     "popularCollections": "Beliebte Kategorien"
   },
   "Footer": {
-    "description": "Ein moderner, Headless-E-Commerce-Shop, erstellt mit Vendure und Next.js. Schnell, flexibel und produktionsbereit.",
-    "categories": "Kategorien",
-    "customer": "Kunde",
+    "description": "Pakistans B2B-Plattform für Agrar-Inputs – für Händler und Distributoren.",
+    "categories": "Produkte",
+    "customer": "Mein Konto",
     "shopAll": "Alle Produkte",
     "orders": "Bestellungen",
-    "account": "Konto",
-    "vendure": "Vendure",
+    "account": "Profil",
+    "company": "Unternehmen",
     "github": "GitHub",
-    "documentation": "Dokumentation",
-    "sourceCode": "Quellcode",
-    "copyright": "Vendure Store. Alle Rechte vorbehalten.",
-    "poweredBy": "Powered by"
+    "allProducts": "Katalog",
+    "dealerLogin": "Händler-Login",
+    "copyright": "AgroNex. Alle Rechte vorbehalten.",
+    "builtWith": "Erstellt mit"
   },
   "Common": {
     "loading": "Wird geladen...",

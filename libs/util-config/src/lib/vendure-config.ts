@@ -3,6 +3,7 @@ import {
   DefaultAssetNamingStrategy,
   DefaultLogger,
   DefaultSearchPlugin,
+  MultiChannelStockLocationStrategy,
   dummyPaymentHandler,
   LogLevel,
   TypeORMHealthCheckStrategy,
@@ -15,10 +16,12 @@ import {
 } from '@vendure/asset-server-plugin';
 import { BullMQJobQueuePlugin } from '@vendure/job-queue-plugin/package/bullmq';
 import { ExamplePlugin } from '@vendure-nx/plugin-example';
+import { FlatRateShippingPlugin } from '@vendure-nx/plugin-flat-rate-shipping';
+
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const PORT = +((process.env.API_INTERNAL_PORT ?? 3000).toString());
+const PORT = +(process.env.API_INTERNAL_PORT ?? 3000).toString();
 const assetUrlPrefix =
   process.env.ASSET_URL_PREFIX ||
   `${process.env.API_PUBLIC_URL}:${process.env.API_PUBLIC_PORT}/vendure-assets/`;
@@ -44,6 +47,58 @@ export const config: VendureConfig = {
   paymentOptions: {
     paymentMethodHandlers: [dummyPaymentHandler],
   },
+  catalogOptions: {
+    stockLocationStrategy: new MultiChannelStockLocationStrategy(),
+  },
+  customFields: {
+    Product: [
+      {
+        name: 'cropType',
+        type: 'string',
+        nullable: true,
+        options: [
+          { value: 'wheat' },
+          { value: 'cotton' },
+          { value: 'rice' },
+          { value: 'sugarcane' },
+          { value: 'all_crops' },
+        ],
+      },
+      {
+        name: 'season',
+        type: 'string',
+        nullable: true,
+        options: [
+          { value: 'rabi' },
+          { value: 'kharif' },
+          { value: 'year_round' },
+        ],
+      },
+      {
+        name: 'registrationNo',
+        type: 'string',
+        nullable: true,
+      },
+    ],
+    ProductVariant: [
+      {
+        name: 'weightKg',
+        type: 'float',
+        nullable: true,
+      },
+      {
+        name: 'packagingType',
+        type: 'string',
+        nullable: true,
+        options: [
+          { value: 'bag' },
+          { value: 'bottle' },
+          { value: 'box' },
+          { value: 'drum' },
+        ],
+      },
+    ],
+  },
   logger: new DefaultLogger({
     level:
       process.env.LOG_LEVEL === 'debug'
@@ -63,20 +118,21 @@ export const config: VendureConfig = {
       assetUploadDir: path.join(rootDir, 'static/assets'),
       assetUrlPrefix,
       namingStrategy: new DefaultAssetNamingStrategy(),
-      storageStrategyFactory: process.env.USE_MINIO === 'true'
-        ? configureS3AssetStorage({
-            bucket: process.env.MINIO_BUCKET,
-            credentials: {
-              accessKeyId: process.env.MINIO_ACCESS_KEY,
-              secretAccessKey: process.env.MINIO_SECRET_KEY,
-            },
-            nativeS3Configuration: {
-              endpoint: process.env.MINIO_ENDPOINT ?? 'http://localhost:9000',
-              forcePathStyle: true,
-              region: process.env.MINIO_STORAGE_REGION || 'us-east-1',
-            },
-          })
-        : undefined,
+      storageStrategyFactory:
+        process.env.USE_MINIO === 'true'
+          ? configureS3AssetStorage({
+              bucket: process.env.MINIO_BUCKET,
+              credentials: {
+                accessKeyId: process.env.MINIO_ACCESS_KEY,
+                secretAccessKey: process.env.MINIO_SECRET_KEY,
+              },
+              nativeS3Configuration: {
+                endpoint: process.env.MINIO_ENDPOINT ?? 'http://localhost:9000',
+                forcePathStyle: true,
+                region: process.env.MINIO_STORAGE_REGION || 'us-east-1',
+              },
+            })
+          : undefined,
     }),
     BullMQJobQueuePlugin.init({
       connection: {
@@ -91,6 +147,7 @@ export const config: VendureConfig = {
     }),
     DefaultSearchPlugin,
     ExamplePlugin,
+    FlatRateShippingPlugin,
   ],
 };
 

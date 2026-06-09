@@ -68,7 +68,7 @@ export async function query<TResult, TVariables>(
         headers['Authorization'] = `Bearer ${authToken}`;
     }
 
-    // Set the channel token header (use provided channelToken or default)
+    // Set the channel token header (use provided channelToken or env default)
     headers[VENDURE_CHANNEL_TOKEN_HEADER] = channelToken || VENDURE_CHANNEL_TOKEN;
 
     const url = new URL(VENDURE_API_URL!);

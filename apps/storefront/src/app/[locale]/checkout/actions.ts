@@ -30,6 +30,7 @@ export async function setShippingAddress(
     shippingAddress: AddressInput,
     useSameForBilling: boolean
 ) {
+
     const shippingResult = await mutate(
         SetOrderShippingAddressMutation,
         {input: shippingAddress},
@@ -53,6 +54,7 @@ export async function setShippingAddress(
 }
 
 export async function setShippingMethod(shippingMethodId: string) {
+
     const result = await mutate(
         SetOrderShippingMethodMutation,
         {shippingMethodId: [shippingMethodId]},
@@ -68,6 +70,7 @@ export async function setShippingMethod(shippingMethodId: string) {
 }
 
 export async function createCustomerAddress(address: AddressInput) {
+
     const result = await mutate(
         CreateCustomerAddressMutation,
         {input: address},
@@ -84,6 +87,7 @@ export async function createCustomerAddress(address: AddressInput) {
 }
 
 export async function transitionToArrangingPayment() {
+
     const result = await mutate(
         TransitionOrderToStateMutation,
         {state: 'ArrangingPayment'},
@@ -92,6 +96,9 @@ export async function transitionToArrangingPayment() {
 
     if (result.data.transitionOrderToState?.__typename === 'OrderStateTransitionError') {
         const errorResult = result.data.transitionOrderToState;
+        if (errorResult.message?.includes('"ArrangingPayment" to "ArrangingPayment"')) {
+            return;
+        }
         throw new Error(
             `Failed to transition order state: ${errorResult.errorCode} - ${errorResult.message}`
         );

@@ -1,0 +1,6 @@
+{
+  "name": "plugin-flat-rate-shipping",
+  "version": "0.0.0",
+  "description": "A vendure plugin",
+  "private": true
+}

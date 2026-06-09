@@ -20,10 +20,13 @@ export async function addToCart(variantId: string, quantity: number = 1) {
     }
 
     if (result.data.addItemToOrder.__typename === 'Order') {
-      // Revalidate cart data across all pages
       updateTag('cart');
       updateTag('active-order');
-      return { success: true, order: result.data.addItemToOrder };
+      return { success: true };
+    } else if (result.data.addItemToOrder.__typename === 'InsufficientStockError') {
+      updateTag('cart');
+      updateTag('active-order');
+      return { success: true, insufficientStock: true, quantityAvailable: result.data.addItemToOrder.quantityAvailable };
     } else {
       return { success: false, error: result.data.addItemToOrder.message };
     }

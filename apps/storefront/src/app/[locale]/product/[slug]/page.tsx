@@ -33,16 +33,17 @@ import {getTranslations} from 'next-intl/server';
 import {toOgLocale} from '@/i18n/locale-utils';
 import {getActiveCurrencyCode} from '@/lib/currency-server';
 import {getRouteLocale} from '@/i18n/server';
+import {getChannelToken} from '@/lib/channel';
 
-async function getProductData(slug: string, currencyCode: string) {
+async function getProductData(slug: string, currencyCode: string, channelToken: string) {
     'use cache';
     cacheLife('hours');
 
     const locale = await getRouteLocale();
-    cacheTag(`product-${slug}-${locale}-${currencyCode}`);
+    cacheTag(`product-${slug}-${locale}-${currencyCode}-${channelToken}`);
     cacheTag('products');
 
-    return await query(GetProductDetailQuery, {slug}, {languageCode: locale, currencyCode});
+    return await query(GetProductDetailQuery, {slug}, {languageCode: locale, currencyCode, channelToken});
 }
 
 export async function generateMetadata({
@@ -51,7 +52,8 @@ export async function generateMetadata({
     const { slug } = await params;
     const locale = await getRouteLocale();
     const currencyCode = await getActiveCurrencyCode();
-    const result = await getProductData(slug, currencyCode);
+    const channelToken = (await getChannelToken()) ?? '__default_channel__';
+    const result = await getProductData(slug, currencyCode, channelToken);
     const product = result.data.product;
 
     const t = await getTranslations({locale, namespace: 'Product'});
@@ -99,9 +101,10 @@ export default async function ProductDetailPage({params, searchParams}: PageProp
     const searchParamsResolved = await searchParams;
     const locale = await getRouteLocale();
     const currencyCode = await getActiveCurrencyCode();
+    const channelToken = (await getChannelToken()) ?? '__default_channel__';
     const t = await getTranslations({locale, namespace: 'Product'});
 
-    const result = await getProductData(slug, currencyCode);
+    const result = await getProductData(slug, currencyCode, channelToken);
 
     const product = result.data.product;
 
@@ -146,7 +149,7 @@ export default async function ProductDetailPage({params, searchParams}: PageProp
 
                     {/* Right Column: Product Info */}
                     <div>
-                        <ProductInfo product={product} searchParams={searchParamsResolved} currencyCode={currencyCode} />
+                        <ProductInfo product={product as typeof product & { customFields: { cropType: string | null; season: string | null; registrationNo: string | null } | null }} searchParams={searchParamsResolved} currencyCode={currencyCode} />
                     </div>
                 </div>
             </div>

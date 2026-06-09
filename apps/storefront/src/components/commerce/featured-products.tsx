@@ -7,17 +7,16 @@ import {GetCollectionProductsQuery} from "@/lib/vendure/queries";
 import { Link } from '@/i18n/navigation';
 import {ArrowRight} from "lucide-react";
 import {getTranslations} from 'next-intl/server';
+import {getChannelToken} from '@/lib/channel';
 
-async function getFeaturedCollectionProducts(currencyCode: string) {
+async function getFeaturedCollectionProducts(currencyCode: string, channelToken: string) {
     'use cache'
     cacheLife('days')
 
     const locale = await getRouteLocale();
-    cacheTag(`featured-${locale}-${currencyCode}`);
+    cacheTag(`featured-${locale}-${currencyCode}-${channelToken}`);
     cacheTag('products');
 
-    // Fetch featured products from a specific collection
-    // Replace 'featured' with your actual collection slug
     const result = await query(GetCollectionProductsQuery, {
         slug: "all-products",
         input: {
@@ -26,7 +25,7 @@ async function getFeaturedCollectionProducts(currencyCode: string) {
             skip: 0,
             groupByProduct: true
         }
-    }, {languageCode: locale, currencyCode});
+    }, {languageCode: locale, currencyCode, channelToken});
 
     return result.data.search.items;
 }
@@ -35,8 +34,9 @@ async function getFeaturedCollectionProducts(currencyCode: string) {
 export async function FeaturedProducts() {
     const locale = await getRouteLocale();
     const currencyCode = await getActiveCurrencyCode();
+    const channelToken = (await getChannelToken()) ?? '__default_channel__';
     const t = await getTranslations({locale, namespace: 'Product'});
-    const products = await getFeaturedCollectionProducts(currencyCode);
+    const products = await getFeaturedCollectionProducts(currencyCode, channelToken);
 
     return (
         <div>

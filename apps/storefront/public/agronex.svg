@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 36" fill="none">
+  <!-- Wheat/leaf icon -->
+  <g fill="currentColor">
+    <!-- Stem -->
+    <rect x="10" y="8" width="1.5" height="20" rx="0.75"/>
+    <!-- Leaves -->
+    <path d="M11 18 Q6 14 4 9 Q9 10 11 15Z" opacity="0.9"/>
+    <path d="M11 18 Q16 14 18 9 Q13 10 11 15Z" opacity="0.9"/>
+    <path d="M11 23 Q7 20 5 15 Q10 16 11 21Z" opacity="0.7"/>
+    <path d="M11 23 Q15 20 17 15 Q12 16 11 21Z" opacity="0.7"/>
+    <!-- Grain top -->
+    <ellipse cx="11" cy="8" rx="1.5" ry="2.5" opacity="0.9"/>
+  </g>
+  <!-- AgroNex text -->
+  <text x="26" y="25" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700" fill="currentColor" letter-spacing="-0.3">AgroNex</text>
+</svg>

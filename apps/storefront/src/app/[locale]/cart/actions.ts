@@ -18,8 +18,14 @@ export async function removeFromCart(lineId: string) {
 
 export async function adjustQuantity(lineId: string, quantity: number) {
     const currencyCode = await getActiveCurrencyCode();
-    await mutate(AdjustCartItemMutation, {lineId, quantity}, {useAuthToken: true, currencyCode});
+    const result = await mutate(AdjustCartItemMutation, {lineId, quantity}, {useAuthToken: true, currencyCode});
     updateTag('cart');
+
+    const response = result.data.adjustOrderLine;
+    if (response.__typename === 'InsufficientStockError') {
+        return { insufficientStock: true, quantityAvailable: response.quantityAvailable };
+    }
+    return { insufficientStock: false };
 }
 
 export async function applyPromotionCode(formData: FormData) {

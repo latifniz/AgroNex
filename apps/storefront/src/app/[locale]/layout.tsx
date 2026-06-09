@@ -1,4 +1,5 @@
 import type {Metadata, Viewport} from "next";
+import {Suspense} from "react";
 import {locale as rootLocale} from "next/root-params";
 import {hasLocale, NextIntlClientProvider} from "next-intl";
 import {Geist, Geist_Mono} from "next/font/google";
@@ -10,6 +11,7 @@ import {getRouteLocale} from "@/i18n/server";
 import {Toaster} from "@/components/ui/sonner";
 import {Navbar} from "@/components/layout/navbar";
 import {Footer} from "@/components/layout/footer";
+import {ChannelPicker} from "@/components/layout/channel-picker";
 import {ThemeProvider} from "@/components/providers/theme-provider";
 import {SITE_NAME, SITE_URL} from "@/lib/metadata";
 import "./globals.css";
@@ -98,6 +100,9 @@ export default async function LocaleLayout({children}: {children: React.ReactNod
                         {children}
                         <Footer/>
                         <Toaster/>
+                        <Suspense fallback={null}>
+                            <ChannelPicker />
+                        </Suspense>
                     </ThemeProvider>
                 </NextIntlClientProvider>
             </body>

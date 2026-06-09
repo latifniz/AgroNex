@@ -4,7 +4,6 @@ import {NavbarCollections} from '@/components/layout/navbar/navbar-collections';
 import {NavbarCart} from '@/components/layout/navbar/navbar-cart';
 import {NavbarUser} from '@/components/layout/navbar/navbar-user';
 import {ThemeSwitcher} from '@/components/layout/navbar/theme-switcher';
-import {LanguagePicker} from '@/components/layout/navbar/language-picker';
 import {CurrencyPickerWrapper} from '@/components/layout/navbar/currency-picker-wrapper';
 import {MobileNavWrapper} from '@/components/layout/navbar/mobile-nav-wrapper';
 import {Suspense} from "react";
@@ -22,7 +21,7 @@ export function Navbar() {
                             <MobileNavWrapper />
                         </Suspense>
                         <NavigationLink href="/" className="text-xl font-bold">
-                            <Image src="/vendure.svg" alt="Vendure" width={40} height={27} className="h-6 w-auto dark:invert" />
+                            <Image src="/agronex.svg" alt="AgroNex" width={140} height={32} className="h-9 w-auto dark:invert" />
                         </NavigationLink>
                         <nav className="hidden md:flex items-center gap-6">
                             <Suspense>
@@ -36,9 +35,6 @@ export function Navbar() {
                                 <SearchInput/>
                             </Suspense>
                         </div>
-                        <Suspense>
-                            <LanguagePicker />
-                        </Suspense>
                         <Suspense>
                             <CurrencyPickerWrapper />
                         </Suspense>

@@ -27,13 +27,14 @@ import {toOgLocale} from '@/i18n/locale-utils';
 import {getActiveCurrencyCode} from '@/lib/currency-server';
 import {getRouteLocale} from '@/i18n/server';
 import {getTranslations} from 'next-intl/server';
+import {getChannelToken} from '@/lib/channel';
 
-async function getCollectionProducts(slug: string, searchParams: { [key: string]: string | string[] | undefined }, currencyCode: string) {
+async function getCollectionProducts(slug: string, searchParams: { [key: string]: string | string[] | undefined }, currencyCode: string, channelToken: string) {
     'use cache';
     cacheLife('hours');
 
     const locale = await getRouteLocale();
-    cacheTag(`collection-${slug}-${locale}-${currencyCode}`);
+    cacheTag(`collection-${slug}-${locale}-${currencyCode}-${channelToken}`);
     cacheTag('collection');
 
     return query(SearchProductsQuery, {
@@ -41,7 +42,7 @@ async function getCollectionProducts(slug: string, searchParams: { [key: string]
             searchParams,
             collectionSlug: slug
         })
-    }, {languageCode: locale, currencyCode});
+    }, {languageCode: locale, currencyCode, channelToken});
 }
 
 async function getCollectionMetadata(slug: string) {
@@ -112,10 +113,11 @@ export default async function CollectionPage({params, searchParams}: PageProps<'
     const searchParamsResolved = await searchParams;
     const locale = await getRouteLocale();
     const currencyCode = await getActiveCurrencyCode();
+    const channelToken = (await getChannelToken()) ?? '__default_channel__';
     const t = await getTranslations({locale, namespace: 'Product'});
     const page = getCurrentPage(searchParamsResolved);
 
-    const productDataPromise = getCollectionProducts(slug, searchParamsResolved, currencyCode);
+    const productDataPromise = getCollectionProducts(slug, searchParamsResolved, currencyCode, channelToken);
     const collectionResult = await getCollectionMetadata(slug);
     const collectionName = collectionResult.data.collection?.name ?? slug;
 
