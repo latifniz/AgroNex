@@ -10,6 +10,7 @@ import {Suspense} from "react";
 import {SearchInput} from '@/components/layout/search-input';
 import {NavbarUserSkeleton} from '@/components/shared/skeletons/navbar-user-skeleton';
 import {SearchInputSkeleton} from '@/components/shared/skeletons/search-input-skeleton';
+import {ChannelSwitcher} from '@/components/layout/navbar/channel-switcher';
 
 export function Navbar() {
     return (
@@ -40,6 +41,9 @@ export function Navbar() {
                         </Suspense>
                         <Suspense>
                             <ThemeSwitcher />
+                        </Suspense>
+                        <Suspense>
+                            <ChannelSwitcher />
                         </Suspense>
                         <Suspense>
                             <NavbarCart/>

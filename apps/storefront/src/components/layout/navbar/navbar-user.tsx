@@ -21,7 +21,7 @@ export async function NavbarUser() {
 
     if (!customer) {
         return (
-            <Button render={<LoginButton isLoggedIn={false} />} nativeButton={false} variant="ghost" />
+            <Button render={<LoginButton isLoggedIn={false} />} variant="ghost" />
         );
     }
 

@@ -15,6 +15,7 @@ import {CheckoutProvider} from './checkout-provider';
 import {noIndexRobots} from '@/lib/metadata';
 import {getActiveCustomer} from '@/lib/vendure/actions';
 import {getAvailableCountriesCached} from '@/lib/vendure/cached';
+import {getChannelToken} from '@/lib/channel';
 
 export async function generateMetadata(): Promise<Metadata> {
     const locale = await getRouteLocale();
@@ -28,19 +29,20 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function CheckoutPage() {
     const locale = await getRouteLocale();
     const currencyCode = await getActiveCurrencyCode();
+    const channelToken = (await getChannelToken()) ?? undefined;
     const t = await getTranslations({locale, namespace: 'Checkout'});
     const customer = await getActiveCustomer();
     const isGuest = !customer;
 
     const [orderRes, addressesRes, countries, shippingMethodsRes, paymentMethodsRes] =
         await Promise.all([
-            query(GetActiveOrderForCheckoutQuery, {}, {useAuthToken: true, currencyCode}),
+            query(GetActiveOrderForCheckoutQuery, {}, {useAuthToken: true, currencyCode, channelToken}),
             isGuest
                 ? Promise.resolve({ data: { activeCustomer: null } })
-                : query(GetCustomerAddressesQuery, {}, {useAuthToken: true}),
+                : query(GetCustomerAddressesQuery, {}, {useAuthToken: true, channelToken}),
             getAvailableCountriesCached(locale),
-            query(GetEligibleShippingMethodsQuery, {}, {useAuthToken: true, currencyCode}),
-            query(GetEligiblePaymentMethodsQuery, {}, {useAuthToken: true, currencyCode}),
+            query(GetEligibleShippingMethodsQuery, {}, {useAuthToken: true, currencyCode, channelToken}),
+            query(GetEligiblePaymentMethodsQuery, {}, {useAuthToken: true, currencyCode, channelToken}),
         ]);
 
     const activeOrder = orderRes.data.activeOrder;

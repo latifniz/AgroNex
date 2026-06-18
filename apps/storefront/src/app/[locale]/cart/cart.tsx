@@ -7,7 +7,7 @@ import {cacheLife, cacheTag} from "next/cache";
 import {query} from "@/lib/vendure/api";
 import {GetActiveOrderQuery} from "@/lib/vendure/queries";
 
-export async function Cart() {
+export async function Cart({channelToken}: {channelToken?: string}) {
     "use cache: private"
     cacheLife('minutes');
     cacheTag('cart');
@@ -18,6 +18,7 @@ export async function Cart() {
         useAuthToken: true,
         languageCode: locale,
         currencyCode,
+        channelToken,
     });
 
     const activeOrder = data.activeOrder;

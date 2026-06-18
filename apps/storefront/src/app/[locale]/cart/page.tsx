@@ -5,6 +5,7 @@ import {Cart} from "@/app/[locale]/cart/cart";
 import {Suspense} from "react";
 import {CartSkeleton} from "@/components/shared/skeletons/cart-skeleton";
 import {noIndexRobots} from '@/lib/metadata';
+import {getChannelToken} from '@/lib/channel';
 
 export async function generateMetadata(): Promise<Metadata> {
     const locale = await getRouteLocale();
@@ -18,13 +19,14 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function CartPage() {
     const locale = await getRouteLocale();
     const t = await getTranslations({locale, namespace: 'Cart'});
+    const channelToken = (await getChannelToken()) ?? undefined;
 
     return (
         <div className="container mx-auto px-4 py-20">
             <h1 className="text-3xl font-bold mb-8">{t('title')}</h1>
 
             <Suspense fallback={<CartSkeleton />}>
-                <Cart/>
+                <Cart channelToken={channelToken}/>
             </Suspense>
         </div>
     );

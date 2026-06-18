@@ -13,6 +13,7 @@ import {
 import {revalidatePath, updateTag} from 'next/cache';
 import {redirect} from '@/i18n/navigation';
 import {getLocale} from 'next-intl/server';
+import {getChannelToken} from '@/lib/channel';
 
 interface AddressInput {
     fullName: string;
@@ -30,11 +31,12 @@ export async function setShippingAddress(
     shippingAddress: AddressInput,
     useSameForBilling: boolean
 ) {
+    const channelToken = (await getChannelToken()) ?? undefined;
 
     const shippingResult = await mutate(
         SetOrderShippingAddressMutation,
         {input: shippingAddress},
-        {useAuthToken: true}
+        {useAuthToken: true, channelToken}
     );
 
     if (shippingResult.data.setOrderShippingAddress.__typename !== 'Order') {
@@ -45,7 +47,7 @@ export async function setShippingAddress(
         await mutate(
             SetOrderBillingAddressMutation,
             {input: shippingAddress},
-            {useAuthToken: true}
+            {useAuthToken: true, channelToken}
         );
     }
 
@@ -54,11 +56,12 @@ export async function setShippingAddress(
 }
 
 export async function setShippingMethod(shippingMethodId: string) {
+    const channelToken = (await getChannelToken()) ?? undefined;
 
     const result = await mutate(
         SetOrderShippingMethodMutation,
         {shippingMethodId: [shippingMethodId]},
-        {useAuthToken: true}
+        {useAuthToken: true, channelToken}
     );
 
     if (result.data.setOrderShippingMethod.__typename !== 'Order') {
@@ -70,11 +73,12 @@ export async function setShippingMethod(shippingMethodId: string) {
 }
 
 export async function createCustomerAddress(address: AddressInput) {
+    const channelToken = (await getChannelToken()) ?? undefined;
 
     const result = await mutate(
         CreateCustomerAddressMutation,
         {input: address},
-        {useAuthToken: true}
+        {useAuthToken: true, channelToken}
     );
 
     if (!result.data.createCustomerAddress) {
@@ -87,11 +91,12 @@ export async function createCustomerAddress(address: AddressInput) {
 }
 
 export async function transitionToArrangingPayment() {
+    const channelToken = (await getChannelToken()) ?? undefined;
 
     const result = await mutate(
         TransitionOrderToStateMutation,
         {state: 'ArrangingPayment'},
-        {useAuthToken: true}
+        {useAuthToken: true, channelToken}
     );
 
     if (result.data.transitionOrderToState?.__typename === 'OrderStateTransitionError') {
@@ -109,20 +114,17 @@ export async function transitionToArrangingPayment() {
 }
 
 export async function placeOrder(paymentMethodCode: string) {
-    // First, transition the order to ArrangingPayment state
     await transitionToArrangingPayment();
 
-    // Prepare metadata based on payment method
+    const channelToken = (await getChannelToken()) ?? undefined;
     const metadata: Record<string, unknown> = {};
 
-    // For standard payment, include the required fields
     if (paymentMethodCode === 'standard-payment') {
         metadata.shouldDecline = false;
         metadata.shouldError = false;
         metadata.shouldErrorOnSettle = false;
     }
 
-    // Add payment to the order
     const result = await mutate(
         AddPaymentToOrderMutation,
         {
@@ -131,7 +133,7 @@ export async function placeOrder(paymentMethodCode: string) {
                 metadata,
             },
         },
-        {useAuthToken: true}
+        {useAuthToken: true, channelToken}
     );
 
     if (result.data.addPaymentToOrder.__typename !== 'Order') {
@@ -168,10 +170,11 @@ export type SetCustomerForOrderResult =
 export async function setCustomerForOrder(
     input: GuestCustomerInput
 ): Promise<SetCustomerForOrderResult> {
+    const channelToken = (await getChannelToken()) ?? undefined;
     const result = await mutate(
         SetCustomerForOrderMutation,
         { input },
-        { useAuthToken: true }
+        { useAuthToken: true, channelToken }
     );
 
     const response = result.data.setCustomerForOrder;

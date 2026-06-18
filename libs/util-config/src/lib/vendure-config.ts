@@ -17,6 +17,7 @@ import {
 import { BullMQJobQueuePlugin } from '@vendure/job-queue-plugin/package/bullmq';
 import { ExamplePlugin } from '@vendure-nx/plugin-example';
 import { FlatRateShippingPlugin } from '@vendure-nx/plugin-flat-rate-shipping';
+import { PaymentsPlugin } from '@vendure-nx/plugin-payments';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -148,6 +149,7 @@ export const config: VendureConfig = {
     DefaultSearchPlugin,
     ExamplePlugin,
     FlatRateShippingPlugin,
+    PaymentsPlugin,
   ],
 };
 

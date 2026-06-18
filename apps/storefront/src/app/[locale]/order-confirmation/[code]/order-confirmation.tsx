@@ -10,6 +10,7 @@ import {getRouteLocale} from '@/i18n/server';
 import {getTranslations} from 'next-intl/server';
 import {query} from '@/lib/vendure/api';
 import {graphql} from '@/graphql';
+import {getChannelToken} from '@/lib/channel';
 
 const GetOrderByCodeQuery = graphql(`
     query GetOrderByCode($code: String!) {
@@ -59,7 +60,8 @@ export async function OrderConfirmation({paramsPromise}: OrderConfirmationProps)
     const locale = await getRouteLocale();
     const t = await getTranslations({locale, namespace: 'OrderConfirmation'});
 
-    const {data} = await query(GetOrderByCodeQuery, {code}, {useAuthToken: true});
+    const channelToken = (await getChannelToken()) ?? undefined;
+    const {data} = await query(GetOrderByCodeQuery, {code}, {useAuthToken: true, channelToken});
     const order = data.orderByCode;
 
     if (!order) {
