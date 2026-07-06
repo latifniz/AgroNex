@@ -18,6 +18,7 @@ import { BullMQJobQueuePlugin } from '@vendure/job-queue-plugin/package/bullmq';
 import { ExamplePlugin } from '@vendure-nx/plugin-example';
 import { FlatRateShippingPlugin } from '@vendure-nx/plugin-flat-rate-shipping';
 import { PaymentsPlugin } from '@vendure-nx/plugin-payments';
+import { LowStockAlertPlugin } from '@vendure-nx/plugin-low-stock-alert';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -33,6 +34,8 @@ export const config: VendureConfig = {
     port: PORT,
     adminApiPath: 'admin-api',
     shopApiPath: 'shop-api',
+    adminApiPlayground: true,
+    shopApiPlayground: true,
   },
   authOptions: {
     requireVerification: false,
@@ -150,6 +153,7 @@ export const config: VendureConfig = {
     ExamplePlugin,
     FlatRateShippingPlugin,
     PaymentsPlugin,
+    LowStockAlertPlugin,
   ],
 };
 

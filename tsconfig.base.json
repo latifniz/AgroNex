@@ -25,8 +25,9 @@
       "@vendure-nx/plugin-flat-rate-shipping": [
         "libs/plugin-flat-rate-shipping/src/index.ts"
       ],
-      "@vendure-nx/plugin-payments": [
-        "libs/plugin-payments/src/index.ts"
+      "@vendure-nx/plugin-payments": ["libs/plugin-payments/src/index.ts"],
+      "@vendure-nx/plugin-low-stock-alert": [
+        "libs/plugin-low-stock-alert/src/index.ts"
       ]
     }
   },

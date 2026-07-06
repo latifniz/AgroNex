@@ -59,3 +59,8 @@ apps/admin-dashboard/src/gql
 .nx/polygraph
 .claude/worktrees
 .claude/settings.local.json
+.claude/
+.vendure/
+.vscode/
+plugin-example/
+randomIdeas.txt
