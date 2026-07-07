@@ -1,31 +1,67 @@
-# AgroNex — Vendure Nx B2B Agri Commerce Monorepo
+# AgroNex — B2B Agri Commerce Platform
 
-**AgroNex** is a B2B agri-input commerce platform built with [Vendure](https://www.vendure.io), a headless commerce framework.
-It models how distributors and wholesalers sell agri products (seeds, fertilizers, pesticides, equipment) to dealers and retailers.
-Built as an Nx integrated monorepo — primarily a deep-dive learning project for Vendure, with a structure close enough to production that it could become one.
+A production-grade B2B agri-input commerce platform built on [Vendure](https://www.vendure.io) (headless commerce framework) as an Nx integrated monorepo.
+
+Models how distributors sell agri products (seeds, fertilizers, pesticides, equipment) to dealers and retailers — with wholesale/retail channels, minimum order enforcement, stock alerts, and credit terms payment.
+
+---
+
+## What's Built
+
+### Multi-Channel B2B Commerce
+- **Retail channel** — standard prices, Cash on Delivery payment, standard shipping
+- **Wholesale channel** — 20% discounted prices, Net 30/60/90 credit terms payment, self-pickup shipping
+- Channel picker on storefront — user selects their channel on first visit, saved in cookie
+
+### Custom Plugins
+
+| Plugin | What it does |
+|---|---|
+| `plugin-flat-rate-shipping` | Per-channel shipping rates with eligibility checkers |
+| `plugin-payments` | COD handler (retail) + Credit Terms handler with configurable Net 30/60/90 days |
+| `plugin-low-stock-alert` | Configurable threshold per variant, dashboard bell notification, rechecks every 5 min |
+| `plugin-moq` | Minimum Order Quantity enforced via OrderInterceptor — wholesale channel only |
+
+### Storefront (Next.js)
+- Product catalog with faceted search (category, brand, crop type)
+- Channel-consistent cart and checkout — all requests scoped to active channel
+- MOQ badge on product page for wholesale variants
+- InsufficientStockError and OrderInterceptorError handled with specific user-facing messages
+- Quantity selector with direct input for bulk orders
+
+### Admin Dashboard
+- Low stock bell alert — fires when any variant drops below its threshold
+- Custom fields visible in admin: crop type, season, registration number (product), low stock threshold + MOQ (variant)
 
 ---
 
 ## Domain Model
 
-**Who sells what to whom:**
-
 ```
 Manufacturer / Importer
        ↓
-   Distributor  (AgroNex platform users — B2B sellers)
+   Distributor  (AgroNex platform — B2B seller)
        ↓
-  Sub-dealer / Retailer  (buyers on the platform)
+  Sub-dealer / Retailer  (buyers on the storefront)
        ↓
       Farmer
 ```
 
-**Product categories:**
+**Product categories:** Seeds · Fertilizers · Pesticides · Farm Equipment
 
-- Seeds (variety, pack size, crop type, season)
-- Fertilizers (NPK type, weight, formulation)
-- Pesticides (active ingredient, crop target, registration no.)
-- Farm equipment & tools
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Commerce engine | Vendure v3.6.3 (NestJS, GraphQL, TypeORM) |
+| Storefront | Next.js 15 (App Router, server actions) |
+| Admin UI | @vendure/dashboard (React + Vite) |
+| Database | PostgreSQL 16 |
+| Job queue | BullMQ + Redis 6.2 |
+| Asset storage | MinIO |
+| Monorepo tooling | Nx 20, Node 22, npm |
 
 ---
 
@@ -33,133 +69,70 @@ Manufacturer / Importer
 
 ```
 apps/
-  server/           # Vendure HTTP server (admin-api + shop-api)
-  worker/           # BullMQ job queue worker
-  admin-dashboard/  # React admin UI (@vendure/dashboard)
-  storefront/       # Next.js B2B storefront (buyer portal)
+  server/           # Vendure HTTP server (admin-api + shop-api), port 3500
+  worker/           # BullMQ job queue worker, port 3123
+  admin-dashboard/  # React admin UI
+  storefront/       # Next.js B2B storefront
 
 libs/
-  util-config/      # Shared VendureConfig (server + worker)
+  util-config/      # Shared VendureConfig (used by server + worker)
   util-testing/     # E2E test utilities
-  plugin-*/         # Custom Vendure plugins (see below)
+  plugin-flat-rate-shipping/
+  plugin-payments/
+  plugin-low-stock-alert/
+  plugin-moq/
 
 tools/
-  executors/        # Custom Nx executors
+  executors/        # Custom Nx executors (package, codegen)
   vendure-nx/       # Plugin scaffold generator
 ```
 
 ---
 
-## Plugins (Planned)
+## Local Development
 
-| Plugin | Purpose |
-|---|---|
-| `plugin-bulk-pricing` | Tiered pricing based on order quantity |
-| `plugin-credit-limit` | Per-customer credit limits for B2B |
-| `plugin-min-order-qty` | Minimum order quantity per product/variant |
-| `plugin-territory` | Assign distributors to geographic territories |
-| `plugin-agri-fields` | Custom fields: crop suitability, season, reg. no. |
+**Prerequisites:** Node 22, Docker
 
----
+```bash
+# 1. Install dependencies
+npm install
 
-## Channels (Multi-store)
+# 2. Configure environment
+cp .env.example .env
 
-| Channel | Purpose |
-|---|---|
-| Pakistan Wholesale | Bulk pricing in PKR |
-| Pakistan Retail | Standard dealer pricing |
-| Export | USD pricing for cross-border |
+# 3. Start infrastructure (PostgreSQL, Redis, MinIO)
+docker-compose up -d
 
----
+# 4. Start server + worker
+npm run dev
 
-## Tech Stack
+# 5. Start admin dashboard (separate terminal)
+npm run dev:dashboard
 
-- **Backend / Commerce:** Vendure v3.x (NestJS, GraphQL, TypeORM)
-- **Frontend:** Next.js (buyer portal)
-- **Database:** PostgreSQL (prod) / SQLite (tests)
-- **Queue:** BullMQ + Redis
-- **Storage:** MinIO (assets)
-- **Tooling:** Nx 20, Node 22, npm
+# 6. Start storefront (separate terminal)
+cd apps/storefront && npm run dev
+```
 
----
-
-## Development Setup
-
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-2. **Configure environment:**
-   ```bash
-   cp .env.example .env
-   ```
-
-3. **Start infrastructure:**
-   ```bash
-   docker-compose up -d
-   ```
-
-4. **Populate database:**
-   ```bash
-   npm run db:populate
-   ```
-
-5. **Run development servers:**
-   ```bash
-   npm run dev           # Server + Worker
-   npm run dev:dashboard # Admin dashboard (Vite HMR)
-   ```
-
-6. Open Admin UI: [http://localhost:3000/admin](http://localhost:3000/admin)
-   Login: `admin@vendure.io` / `superadmin`
+**URLs:**
+- Storefront: http://localhost:3001
+- Admin UI: http://localhost:3500/admin
+- Admin login: `admin@vendure.io` / `superadmin`
+- GraphQL playground: http://localhost:3500/admin-api
 
 ---
 
 ## Common Commands
 
 ```bash
-npm run dev                        # Server + Worker
-npm run dev:dashboard              # Admin dashboard
-npx nx run server:migration <name> # Create migration
-npx nx test server                 # Run server tests
-npx nx lint server                 # Lint
-nx g vendure-nx:vendure-plugin-generator --name=BulkPricing --uiExtension=true
+npm run dev                              # Server + Worker
+npm run dev:dashboard                    # Admin dashboard (Vite HMR)
+npx nx run server:migration <name>       # Generate migration
+npx nx test server                       # Run tests
+npx nx lint server                       # Lint
+
+# Scaffold a new plugin
+nx g vendure-nx:vendure-plugin-generator --name=MyPlugin --uiExtension=true
 ```
-
----
-
-## Updating Vendure
-
-This project consumes Vendure as npm packages. To upgrade:
-
-```bash
-npm install @vendure/core@latest \
-  @vendure/dashboard@latest \
-  @vendure/email-plugin@latest \
-  @vendure/job-queue-plugin@latest \
-  @vendure/asset-server-plugin@latest \
-  @vendure/payments-plugin@latest
-
-# Then generate and run any required migrations
-npx nx run server:migration post-upgrade
-npm run dev
-```
-
-Check the [Vendure changelog](https://github.com/vendure-ecommerce/vendure/blob/master/CHANGELOG.md) before upgrading.
-
----
-
-## Learning Roadmap
-
-1. Core setup — server, admin UI, GraphQL API basics
-2. Agri product catalog — variants, facets, collections
-3. Inventory — stock locations (warehouse by region), stock levels
-4. Orders & customers — B2B order lifecycle
-5. Custom fields — crop type, season, registration numbers
-6. First plugin — bulk pricing or credit limit
-7. Multi-channel — wholesale vs retail pricing
-8. External integrations — shipping carriers, payment gateways
 
 ---
 
