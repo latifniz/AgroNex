@@ -13,7 +13,7 @@ RUN npx nx build admin-dashboard
 RUN npx nx run server:build
 
 # Install production deps inside dist
-RUN npx nx run server:prepare-deployment
+RUN cd dist/apps/server && npm install --legacy-peer-deps
 
 FROM node:22-slim
 WORKDIR /app
