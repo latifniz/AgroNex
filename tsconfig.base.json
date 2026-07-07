@@ -28,7 +28,8 @@
       "@vendure-nx/plugin-payments": ["libs/plugin-payments/src/index.ts"],
       "@vendure-nx/plugin-low-stock-alert": [
         "libs/plugin-low-stock-alert/src/index.ts"
-      ]
+      ],
+      "@vendure-nx/plugin-moq": ["libs/plugin-moq/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

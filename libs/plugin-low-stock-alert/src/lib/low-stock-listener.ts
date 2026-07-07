@@ -7,7 +7,7 @@ import {
   Logger,
 } from '@vendure/core';
 
-declare module '@vendure/core' {
+declare module '@vendure/core/dist/entity/custom-entity-fields' {
   interface CustomProductVariantFields {
     lowStockThreshold: number;
   }

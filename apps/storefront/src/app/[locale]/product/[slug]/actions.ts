@@ -29,6 +29,8 @@ export async function addToCart(variantId: string, quantity: number = 1) {
       updateTag('cart');
       updateTag('active-order');
       return { success: true, insufficientStock: true, quantityAvailable: result.data.addItemToOrder.quantityAvailable };
+    } else if (result.data.addItemToOrder.__typename === 'OrderInterceptorError') {
+      return { success: false, error: result.data.addItemToOrder.interceptorError };
     } else {
       return { success: false, error: result.data.addItemToOrder.message };
     }

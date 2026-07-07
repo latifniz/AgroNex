@@ -149,7 +149,7 @@ export default async function ProductDetailPage({params, searchParams}: PageProp
 
                     {/* Right Column: Product Info */}
                     <div>
-                        <ProductInfo product={product as typeof product & { customFields: { cropType: string | null; season: string | null; registrationNo: string | null } | null }} searchParams={searchParamsResolved} currencyCode={currencyCode} />
+                        <ProductInfo product={product as typeof product & { customFields: { cropType: string | null; season: string | null; registrationNo: string | null } | null }} searchParams={searchParamsResolved} currencyCode={currencyCode} channelToken={channelToken} />
                     </div>
                 </div>
             </div>

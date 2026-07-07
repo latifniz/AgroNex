@@ -38,6 +38,10 @@ export const AddToCartMutation = graphql(`
                 message
                 quantityAvailable
             }
+            ... on OrderInterceptorError {
+                errorCode
+                interceptorError
+            }
             ... on ErrorResult {
                 errorCode
                 message

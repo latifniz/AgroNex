@@ -19,6 +19,7 @@ import { ExamplePlugin } from '@vendure-nx/plugin-example';
 import { FlatRateShippingPlugin } from '@vendure-nx/plugin-flat-rate-shipping';
 import { PaymentsPlugin } from '@vendure-nx/plugin-payments';
 import { LowStockAlertPlugin } from '@vendure-nx/plugin-low-stock-alert';
+import { MoqPlugin } from '@vendure-nx/plugin-moq';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -154,6 +155,7 @@ export const config: VendureConfig = {
     FlatRateShippingPlugin,
     PaymentsPlugin,
     LowStockAlertPlugin,
+    MoqPlugin,
   ],
 };
 

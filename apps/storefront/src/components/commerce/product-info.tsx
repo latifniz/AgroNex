@@ -24,6 +24,7 @@ interface ProductInfoProps {
       sku: string;
       priceWithTax: number;
       stockLevel: string;
+      customFields?: { minOrderQuantity?: number | null } | null;
       options: Array<{
         id: string;
         code: string;
@@ -54,6 +55,7 @@ interface ProductInfoProps {
   };
   searchParams: { [key: string]: string | string[] | undefined };
   currencyCode: string;
+  channelToken?: string;
 }
 
 const formatLabel = (value: string) =>
@@ -63,6 +65,7 @@ export function ProductInfo({
   product,
   searchParams,
   currencyCode,
+  channelToken,
 }: ProductInfoProps) {
   const t = useTranslations('Product');
   const pathname = usePathname();
@@ -209,6 +212,13 @@ export function ProductInfo({
               Reg No: {product.customFields.registrationNo}
             </span>
           )}
+        </div>
+      )}
+
+      {/* MOQ Badge — wholesale only */}
+      {channelToken === 'wholesale-token' && !!selectedVariant?.customFields?.minOrderQuantity && selectedVariant.customFields.minOrderQuantity > 0 && (
+        <div className="inline-flex items-center gap-2 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 px-4 py-2 text-sm font-medium">
+          Min. order: {selectedVariant.customFields.minOrderQuantity} units
         </div>
       )}
 
