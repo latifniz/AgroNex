@@ -13,3 +13,8 @@ tmp
 tools/scripts/data-import
 tools/vendure-nx
 dist/apps/admin-ui-app/.angular
+apps/storefront
+coverage
+.env
+.env.*
+!.env.example

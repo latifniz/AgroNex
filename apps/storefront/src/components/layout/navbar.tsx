@@ -51,6 +51,16 @@ export function Navbar() {
                         <Suspense fallback={<NavbarUserSkeleton />}>
                             <NavbarUser/>
                         </Suspense>
+                        {process.env.NEXT_PUBLIC_DASHBOARD_URL && (
+                            <a
+                                href={process.env.NEXT_PUBLIC_DASHBOARD_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hidden sm:inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
+                            >
+                                Dashboard
+                            </a>
+                        )}
                     </div>
                 </div>
             </div>
