@@ -6,8 +6,8 @@ RUN npm ci
 
 COPY . .
 
-# Build dashboard (server serves it via DashboardPlugin)
-RUN npx nx build admin-dashboard
+# Build dashboard directly with vite to ensure output lands in /app/dist
+RUN cd apps/admin-dashboard && npx vite build --outDir /app/dist/apps/admin-dashboard
 
 # Build server (build-app + transpile-migrations + package)
 RUN npx nx run server:build
