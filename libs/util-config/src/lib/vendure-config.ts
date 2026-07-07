@@ -1,6 +1,7 @@
 import path from 'path';
 import {
   DefaultAssetNamingStrategy,
+  DefaultJobQueuePlugin,
   DefaultLogger,
   DefaultSearchPlugin,
   MultiChannelStockLocationStrategy,
@@ -14,7 +15,6 @@ import {
   AssetServerPlugin,
   configureS3AssetStorage,
 } from '@vendure/asset-server-plugin';
-import { BullMQJobQueuePlugin } from '@vendure/job-queue-plugin/package/bullmq';
 import { ExamplePlugin } from '@vendure-nx/plugin-example';
 import { FlatRateShippingPlugin } from '@vendure-nx/plugin-flat-rate-shipping';
 import { PaymentsPlugin } from '@vendure-nx/plugin-payments';
@@ -139,17 +139,7 @@ export const config: VendureConfig = {
             })
           : undefined,
     }),
-    BullMQJobQueuePlugin.init({
-      connection: {
-        host: process.env.REDIS_HOST ?? '127.0.0.1',
-        port: process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379,
-        password: process.env.REDIS_PASSWORD || undefined,
-        maxRetriesPerRequest: null,
-      },
-      queueOptions: {
-        defaultJobOptions: {},
-      },
-    }),
+    DefaultJobQueuePlugin,
     DefaultSearchPlugin,
     ExamplePlugin,
     FlatRateShippingPlugin,
