@@ -9,6 +9,12 @@ export default defineConfig({
     outDir: join(__dirname, '../../dist/apps/dashboard'),
   },
   plugins: [
+    {
+      name: 'agronex-title',
+      transformIndexHtml(html: string) {
+        return html.replace(/<title>.*?<\/title>/, '<title>AgroNex</title>');
+      },
+    },
     vendureDashboardPlugin({
       tempCompilationDir: join(__dirname, './__vendure-dashboard-temp'),
       vendureConfigPath: pathToFileURL(

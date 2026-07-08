@@ -5,8 +5,12 @@ import { ReviewsWidget } from './components/reviews-widget';
 import { StarRatingFormInput } from './components/star-rating';
 import { ReviewCountLink } from './components/review-count-link';
 import { FeaturedReviewSelector } from './components/featured-review-selector';
+import { AgroNexLoginHeader } from './components/agronex-login-header';
 
 export default defineDashboardExtension({
+  login: {
+    beforeForm: { component: AgroNexLoginHeader },
+  },
   routes: [
     {
       path: '/product-reviews',
