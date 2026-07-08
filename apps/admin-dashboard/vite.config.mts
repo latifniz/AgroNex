@@ -11,8 +11,14 @@ export default defineConfig({
   plugins: [
     {
       name: 'agronex-branding',
+      transform(code: string, id: string) {
+        // Patch the hardcoded DEFAULT_TITLE = 'Vendure' in the dashboard source
+        if (id.includes('use-page-title') && code.includes("'Vendure'")) {
+          return { code: code.replace("'Vendure'", "'AgroNex'"), map: null };
+        }
+      },
       transformIndexHtml(html: string) {
-        const favicon = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2316a34a'/><text x='16' y='22' font-family='Arial' font-size='13' font-weight='bold' fill='white' text-anchor='middle'>AN</text></svg>`;
+        const favicon = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230ea5e9'/><text x='16' y='22' font-family='Arial' font-size='13' font-weight='bold' fill='white' text-anchor='middle'>AN</text></svg>`;
         return html
           .replace(/<link rel="icon"[^>]*>/, `<link rel="icon" type="image/svg+xml" href="${favicon}" />`)
           .replace(/content="Vendure Admin Dashboard"/, 'content="AgroNex Admin Dashboard"')
@@ -24,7 +30,6 @@ export default defineConfig({
   a[href="https://vendure.io/pricing"] { display: none !important; }
 </style>
 <script>
-  document.title = 'AgroNex';
   new MutationObserver(function() {
     var s = document.getElementById('vendure-branding-style');
     if (s) {
