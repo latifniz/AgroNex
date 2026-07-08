@@ -14,13 +14,27 @@ export default defineConfig({
       transformIndexHtml(html: string) {
         return html
           .replace(/<title>.*?<\/title>/, '<title>AgroNex</title>')
+          .replace(/href="\/favicon\.png"[^>]*>/, 'href="/favicon.svg" type="image/svg+xml">')
+          .replace(/content="Vendure Admin Dashboard"/, 'content="AgroNex Admin Dashboard"')
+          .replace(/content="Vendure"/, 'content="AgroNex"')
           .replace(
             '</head>',
             `<style>
   /* Hide "Explore Platform & Cloud" promo link in profile dropdown */
   a[href="https://vendure.io/pricing"] { display: none !important; }
-  a[href="https://vendure.io/pricing"] + * { display: none !important; }
-</style></head>`,
+</style>
+<script>
+  // Remove Vendure branding style tag to allow hiding the branding element
+  new MutationObserver(function() {
+    var s = document.getElementById('vendure-branding-style');
+    if (s) {
+      s.remove();
+      document.querySelectorAll('[data-vendure-branding]').forEach(function(el) {
+        el.style.setProperty('display', 'none', 'important');
+      });
+    }
+  }).observe(document.documentElement, { childList: true, subtree: true });
+</script></head>`,
           );
       },
     },
