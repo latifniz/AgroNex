@@ -10,8 +10,10 @@ import {
 import { populateInitialData } from '@vendure/core/cli';
 import { populate } from '@vendure/core/cli';
 import { config } from '@vendure-nx/util-config';
-import { initialData, PRODUCTS_CSV_PATH } from '@vendure-nx/util-testing';
+import { initialData } from '@vendure-nx/util-testing';
 import * as path from 'path';
+
+const PRODUCTS_CSV_PATH = path.join(__dirname, 'agro-products.csv');
 
 const mergedConfig = mergeConfig(config, {
   logger: new DefaultLogger({ level: LogLevel.Verbose }),
