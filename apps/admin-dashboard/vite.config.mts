@@ -10,9 +10,18 @@ export default defineConfig({
   },
   plugins: [
     {
-      name: 'agronex-title',
+      name: 'agronex-branding',
       transformIndexHtml(html: string) {
-        return html.replace(/<title>.*?<\/title>/, '<title>AgroNex</title>');
+        return html
+          .replace(/<title>.*?<\/title>/, '<title>AgroNex</title>')
+          .replace(
+            '</head>',
+            `<style>
+  /* Hide "Explore Platform & Cloud" promo link in profile dropdown */
+  a[href="https://vendure.io/pricing"] { display: none !important; }
+  a[href="https://vendure.io/pricing"] + * { display: none !important; }
+</style></head>`,
+          );
       },
     },
     vendureDashboardPlugin({
