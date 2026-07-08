@@ -1,5 +1,6 @@
 {
   "installCommand": "cd ../.. && npm install",
   "buildCommand": "npx vite build --outDir dist",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
