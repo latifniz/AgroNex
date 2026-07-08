@@ -6,9 +6,11 @@ import { StarRatingFormInput } from './components/star-rating';
 import { ReviewCountLink } from './components/review-count-link';
 import { FeaturedReviewSelector } from './components/featured-review-selector';
 import { AgroNexLoginHeader } from './components/agronex-login-header';
+import { AgroNexLogo } from './components/agronex-logo';
 
 export default defineDashboardExtension({
   login: {
+    logo: { component: AgroNexLogo },
     beforeForm: { component: AgroNexLoginHeader },
   },
   routes: [
