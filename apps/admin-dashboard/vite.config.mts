@@ -14,7 +14,10 @@ export default defineConfig({
       transformIndexHtml(html: string) {
         return html
           .replace(/<title>.*?<\/title>/, '<title>AgroNex</title>')
-          .replace(/href="\/favicon\.png"[^>]*>/, 'href="/favicon.svg" type="image/svg+xml">')
+          .replace(
+            /<link rel="icon"[^>]*>/,
+            `<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2316a34a'/><text x='16' y='22' font-family='Arial' font-size='13' font-weight='bold' fill='white' text-anchor='middle'>AN</text></svg>" />`,
+          )
           .replace(/content="Vendure Admin Dashboard"/, 'content="AgroNex Admin Dashboard"')
           .replace(/content="Vendure"/, 'content="AgroNex"')
           .replace(
