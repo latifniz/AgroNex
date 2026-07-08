@@ -1,6 +1,5 @@
 import {
   bootstrap,
-  DefaultJobQueuePlugin,
   LogLevel,
   DefaultLogger,
   mergeConfig,
@@ -21,12 +20,7 @@ const mergedConfig = mergeConfig(config, {
     synchronize: true,
     migrations: [path.join(__dirname, '../../migrations/*.js')],
   },
-  plugins: (config.plugins || [])
-    .filter((p: any) => {
-      const name = typeof p === 'function' ? p.name : '';
-      return !name.includes('BullMQ');
-    })
-    .concat(DefaultJobQueuePlugin),
+  plugins: config.plugins || [],
 });
 
 async function main() {
