@@ -18,11 +18,15 @@ export default defineConfig({
         }
       },
       transformIndexHtml(html: string) {
-        const favicon = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230ea5e9'/><text x='16' y='22' font-family='Arial' font-size='13' font-weight='bold' fill='white' text-anchor='middle'>AN</text></svg>`;
+        const favicon = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAzMiAzMic+PHJlY3Qgd2lkdGg9JzMyJyBoZWlnaHQ9JzMyJyByeD0nNycgZmlsbD0nIzBlYTVlOScvPjx0ZXh0IHg9JzE2JyB5PScyMicgZm9udC1mYW1pbHk9J0FyaWFsJyBmb250LXNpemU9JzEzJyBmb250LXdlaWdodD0nYm9sZCcgZmlsbD0nd2hpdGUnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkFOPC90ZXh0Pjwvc3ZnPg==`;
         return html
           .replace(/<link rel="icon"[^>]*>/, `<link rel="icon" type="image/svg+xml" href="${favicon}" />`)
           .replace(/content="Vendure Admin Dashboard"/, 'content="AgroNex Admin Dashboard"')
           .replace(/content="Vendure"/, 'content="AgroNex"')
+          .replace(
+            '<head>',
+            `<head><base href="/">`,
+          )
           .replace(
             '</head>',
             `<title>AgroNex</title>
