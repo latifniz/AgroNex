@@ -12,22 +12,19 @@ export default defineConfig({
     {
       name: 'agronex-branding',
       transformIndexHtml(html: string) {
+        const favicon = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2316a34a'/><text x='16' y='22' font-family='Arial' font-size='13' font-weight='bold' fill='white' text-anchor='middle'>AN</text></svg>`;
         return html
-          .replace(/<title>.*?<\/title>/, '<title>AgroNex</title>')
-          .replace(
-            /<link rel="icon"[^>]*>/,
-            `<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2316a34a'/><text x='16' y='22' font-family='Arial' font-size='13' font-weight='bold' fill='white' text-anchor='middle'>AN</text></svg>" />`,
-          )
+          .replace(/<link rel="icon"[^>]*>/, `<link rel="icon" type="image/svg+xml" href="${favicon}" />`)
           .replace(/content="Vendure Admin Dashboard"/, 'content="AgroNex Admin Dashboard"')
           .replace(/content="Vendure"/, 'content="AgroNex"')
           .replace(
             '</head>',
-            `<style>
-  /* Hide "Explore Platform & Cloud" promo link in profile dropdown */
+            `<title>AgroNex</title>
+<style>
   a[href="https://vendure.io/pricing"] { display: none !important; }
 </style>
 <script>
-  // Remove Vendure branding style tag to allow hiding the branding element
+  document.title = 'AgroNex';
   new MutationObserver(function() {
     var s = document.getElementById('vendure-branding-style');
     if (s) {
