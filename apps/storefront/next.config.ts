@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
             },
             {
                 hostname: 'localhost'
+            },
+            {
+                hostname: 'agronex.abdullatifnizamani.com'
             }
         ],
     },
