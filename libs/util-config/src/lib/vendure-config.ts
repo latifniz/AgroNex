@@ -44,6 +44,10 @@ export const config: VendureConfig = {
     cookieOptions: {
       secret: process.env.COOKIE_SECRET,
     },
+    superadminCredentials: {
+      identifier: process.env.SUPERADMIN_USERNAME!,
+      password: process.env.SUPERADMIN_PASSWORD!,
+    },
   },
   dbConnectionOptions: {
     ...getDbConnectionOptions(),
