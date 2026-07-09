@@ -24,7 +24,7 @@ async function Copyright() {
 
 export async function Footer() {
     'use cache'
-    cacheLife('days');
+    cacheLife({ revalidate: 30, stale: 0, expire: 60 });
 
     const locale = await getRouteLocale();
     cacheTag(`footer-${locale}`);

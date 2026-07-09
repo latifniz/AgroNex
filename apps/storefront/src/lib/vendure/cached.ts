@@ -36,7 +36,7 @@ export async function getAvailableCountriesCached(locale: string) {
  */
 export async function getTopCollections(locale: string) {
     'use cache';
-    cacheLife('days');
+    cacheLife({ revalidate: 30, stale: 0, expire: 60 });
     cacheTag(`collections-${locale}`);
 
     const result = await query(GetTopCollectionsQuery, undefined, {languageCode: locale});

@@ -5,7 +5,7 @@ import {MobileNav} from '@/components/layout/navbar/mobile-nav';
 
 export async function MobileNavWrapper() {
     "use cache";
-    cacheLife('days');
+    cacheLife({ revalidate: 30, stale: 0, expire: 60 });
 
     const locale = await getRouteLocale();
     cacheTag(`mobile-nav-${locale}`);
