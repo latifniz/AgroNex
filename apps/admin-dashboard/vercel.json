@@ -1,6 +1,6 @@
 {
   "installCommand": "cd ../.. && npm install",
-  "buildCommand": "npx vite build --outDir dist",
+  "buildCommand": "rm -rf ./__vendure-dashboard-temp && npx vite build --outDir dist",
   "outputDirectory": "dist",
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

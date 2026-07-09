@@ -96,9 +96,13 @@ export default async function LocaleLayout({children}: {children: React.ReactNod
             >
                 <NextIntlClientProvider locale={locale} messages={messages}>
                     <ThemeProvider>
-                        <Navbar />
+                        <Suspense fallback={null}>
+                            <Navbar />
+                        </Suspense>
                         {children}
-                        <Footer/>
+                        <Suspense fallback={null}>
+                            <Footer/>
+                        </Suspense>
                         <Toaster/>
                         <Suspense fallback={null}>
                             <ChannelPicker />
