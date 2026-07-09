@@ -29,7 +29,16 @@ export async function getAvailableCountriesCached(locale: string) {
     return result.data.availableCountries || [];
 }
 
+/**
+ * Get top-level collections with caching enabled.
+ * Collections rarely change, so we cache them for 1 day.
+ * Collection names are translatable, so locale is required.
+ */
 export async function getTopCollections(locale: string) {
+    'use cache';
+    cacheLife('days');
+    cacheTag(`collections-${locale}`);
+
     const result = await query(GetTopCollectionsQuery, undefined, {languageCode: locale});
     return result.data.collections.items;
 }
