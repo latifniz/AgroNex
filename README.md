@@ -1,17 +1,28 @@
 # AgroNex — B2B Agri Commerce Platform
 
-A production-grade B2B agri-input commerce platform built on [Vendure](https://www.vendure.io) (headless commerce framework) as an Nx integrated monorepo.
+> **Early-stage template.** Core commerce infrastructure is in place. More features (dealer onboarding, credit management, field-agent app, analytics) are actively being built.
 
-Models how distributors sell agri products (seeds, fertilizers, pesticides, equipment) to dealers and retailers — with wholesale/retail channels, minimum order enforcement, stock alerts, and credit terms payment.
+A B2B agri-input commerce platform built on [Vendure](https://www.vendure.io) as an Nx integrated monorepo. Models how distributors sell seeds, fertilizers, pesticides, and farm equipment to dealers and retailers — with wholesale/retail channels, minimum order enforcement, stock alerts, and credit-terms payment.
+
+---
+
+## Live Demo
+
+| | URL |
+|---|---|
+| **Storefront** | https://agronex-store.vercel.app/en |
+| **Admin Dashboard** | https://agronex-admin.vercel.app/login |
+
+**Demo credentials (read-only):** `demo` / `demo`
 
 ---
 
 ## What's Built
 
 ### Multi-Channel B2B Commerce
-- **Retail channel** — standard prices, Cash on Delivery payment, standard shipping
-- **Wholesale channel** — 20% discounted prices, Net 30/60/90 credit terms payment, self-pickup shipping
-- Channel picker on storefront — user selects their channel on first visit, saved in cookie
+- **Retail channel** — standard prices, Cash on Delivery, standard shipping
+- **Wholesale channel** — 20% discounted prices, Net 30/60/90 credit terms, self-pickup shipping
+- Channel picker on storefront — saved in cookie across sessions
 
 ### Custom Plugins
 
@@ -22,16 +33,18 @@ Models how distributors sell agri products (seeds, fertilizers, pesticides, equi
 | `plugin-low-stock-alert` | Configurable threshold per variant, dashboard bell notification, rechecks every 5 min |
 | `plugin-moq` | Minimum Order Quantity enforced via OrderInterceptor — wholesale channel only |
 
-### Storefront (Next.js)
-- Product catalog with faceted search (category, brand, crop type)
-- Channel-consistent cart and checkout — all requests scoped to active channel
-- MOQ badge on product page for wholesale variants
-- InsufficientStockError and OrderInterceptorError handled with specific user-facing messages
-- Quantity selector with direct input for bulk orders
+### Storefront (Next.js 15)
+- Product catalog with faceted search (category, crop type, season)
+- Channel-aware cart and checkout
+- MOQ badge on product pages for wholesale
+- Multi-language (English + German), multi-currency (USD + PKR)
+- Contact page and homepage contact section
 
 ### Admin Dashboard
-- Low stock bell alert — fires when any variant drops below its threshold
-- Custom fields visible in admin: crop type, season, registration number (product), low stock threshold + MOQ (variant)
+- Custom-branded (AgroNex) — Vendure upsell UI removed
+- Low stock bell alert in sidebar
+- Custom product fields: crop type, season, registration number
+- Custom variant fields: weight, packaging type, MOQ, low stock threshold
 
 ---
 
@@ -40,14 +53,12 @@ Models how distributors sell agri products (seeds, fertilizers, pesticides, equi
 ```
 Manufacturer / Importer
        ↓
-   Distributor  (AgroNex platform — B2B seller)
+   Distributor  ← AgroNex platform (B2B seller)
        ↓
-  Sub-dealer / Retailer  (buyers on the storefront)
+  Sub-dealer / Retailer  (storefront buyers)
        ↓
       Farmer
 ```
-
-**Product categories:** Seeds · Fertilizers · Pesticides · Farm Equipment
 
 ---
 
@@ -55,13 +66,13 @@ Manufacturer / Importer
 
 | Layer | Technology |
 |---|---|
-| Commerce engine | Vendure v3.6.3 (NestJS, GraphQL, TypeORM) |
-| Storefront | Next.js 15 (App Router, server actions) |
+| Commerce engine | Vendure v3.5.4 (NestJS, GraphQL, TypeORM) |
+| Storefront | Next.js 15 (App Router, PPR, `use cache`) |
 | Admin UI | @vendure/dashboard (React + Vite) |
 | Database | PostgreSQL 16 |
 | Job queue | BullMQ + Redis 6.2 |
-| Asset storage | MinIO |
-| Monorepo tooling | Nx 20, Node 22, npm |
+| Asset storage | MinIO (S3-compatible) |
+| Monorepo | Nx 20, Node 22, npm |
 
 ---
 
@@ -69,13 +80,13 @@ Manufacturer / Importer
 
 ```
 apps/
-  server/           # Vendure HTTP server (admin-api + shop-api), port 3500
-  worker/           # BullMQ job queue worker, port 3123
-  admin-dashboard/  # React admin UI
+  server/           # Vendure HTTP server (admin-api + shop-api)
+  worker/           # BullMQ job queue worker
+  admin-dashboard/  # React admin UI (custom branded)
   storefront/       # Next.js B2B storefront
 
 libs/
-  util-config/      # Shared VendureConfig (used by server + worker)
+  util-config/      # Shared VendureConfig (server + worker)
   util-testing/     # E2E test utilities
   plugin-flat-rate-shipping/
   plugin-payments/
@@ -83,7 +94,7 @@ libs/
   plugin-moq/
 
 tools/
-  executors/        # Custom Nx executors (package, codegen)
+  executors/        # Custom Nx executors
   vendure-nx/       # Plugin scaffold generator
 ```
 
@@ -99,25 +110,27 @@ npm install
 
 # 2. Configure environment
 cp .env.example .env
+# Edit .env — set DB credentials, Redis, MinIO, and strong superadmin credentials
 
-# 3. Start infrastructure (PostgreSQL, Redis, MinIO)
+# 3. Start infrastructure
 docker-compose up -d
 
 # 4. Start server + worker
 npm run dev
 
-# 5. Start admin dashboard (separate terminal)
+# 5. Admin dashboard (separate terminal)
 npm run dev:dashboard
 
-# 6. Start storefront (separate terminal)
+# 6. Storefront (separate terminal)
 cd apps/storefront && npm run dev
 ```
 
-**URLs:**
-- Storefront: http://localhost:3001
-- Admin UI: http://localhost:3500/admin
-- Admin login: `admin@vendure.io` / `superadmin`
-- GraphQL playground: http://localhost:3500/admin-api
+| Service | URL |
+|---|---|
+| Storefront | http://localhost:3001 |
+| Admin UI | http://localhost:5173 |
+| Shop API | http://localhost:3000/shop-api |
+| Admin API | http://localhost:3000/admin-api |
 
 ---
 
@@ -133,6 +146,13 @@ npx nx lint server                       # Lint
 # Scaffold a new plugin
 nx g vendure-nx:vendure-plugin-generator --name=MyPlugin --uiExtension=true
 ```
+
+---
+
+## Contact
+
+Built by [Abdul Latif Nizamani](https://linkedin.com/in/abdullatifniz)
+— [abdullatifnizamani517@gmail.com](mailto:abdullatifnizamani517@gmail.com) · +92 319 190 2669
 
 ---
 
