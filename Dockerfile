@@ -1,6 +1,11 @@
 FROM node:22 AS builder
 WORKDIR /app
 
+ARG API_PUBLIC_URL=http://localhost
+ARG API_PUBLIC_PORT=3000
+ENV API_PUBLIC_URL=$API_PUBLIC_URL
+ENV API_PUBLIC_PORT=$API_PUBLIC_PORT
+
 COPY package*.json ./
 RUN npm install
 

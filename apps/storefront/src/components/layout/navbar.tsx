@@ -22,7 +22,7 @@ export function Navbar() {
                             <MobileNavWrapper />
                         </Suspense>
                         <NavigationLink href="/" className="text-xl font-bold">
-                            <Image src="/agronex.svg" alt="AgroNex" width={140} height={32} className="h-9 w-auto dark:invert" />
+                            <Image src="/agronex.svg" alt="AgroNex" width={160} height={40} priority className="h-10 w-auto dark:invert" />
                         </NavigationLink>
                         <nav className="hidden md:flex items-center gap-6">
                             <Suspense>

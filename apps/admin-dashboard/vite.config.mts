@@ -12,9 +12,39 @@ export default defineConfig({
     {
       name: 'agronex-branding',
       transform(code: string, id: string) {
-        // Patch the hardcoded DEFAULT_TITLE = 'Vendure' in the dashboard source
-        if (id.includes('use-page-title') && code.includes("'Vendure'")) {
-          return { code: code.replace("'Vendure'", "'AgroNex'"), map: null };
+        // Title: match by content so it works regardless of filename (changed in 3.7)
+        if (code.includes('DEFAULT_TITLE') && (code.includes('"Vendure"') || code.includes("'Vendure'"))) {
+          return {
+            code: code.replace(/DEFAULT_TITLE\s*=\s*["']Vendure["']/, 'DEFAULT_TITLE = "AgroNex"'),
+            map: null,
+          };
+        }
+
+        // Platform & Cloud: match by content so file renames don't matter
+        if (code.includes('"Explore Platform & Cloud"')) {
+          const groupMarker = 'jsx(DropdownMenuGroup,';
+          const targetIdx = code.indexOf('"Explore Platform & Cloud"');
+          const groupStart = code.lastIndexOf(groupMarker, targetIdx);
+          if (groupStart === -1) return;
+
+          let depth = 0;
+          let closeIdx = -1;
+          for (let i = groupStart; i < code.length; i++) {
+            if (code[i] === '(') depth++;
+            else if (code[i] === ')') {
+              if (--depth === 0) { closeIdx = i; break; }
+            }
+          }
+          if (closeIdx === -1) return;
+
+          const after = code.slice(closeIdx + 1);
+          const sepMatch = after.match(/^,?\s*\/\*\s*@__PURE__\s*\*\/\s*jsx\(DropdownMenuSeparator,\s*\{\}\)/);
+          const removeUntil = closeIdx + 1 + (sepMatch ? sepMatch[0].length : 0);
+
+          return {
+            code: code.slice(0, groupStart) + 'null' + code.slice(removeUntil),
+            map: null,
+          };
         }
       },
       transformIndexHtml(html: string) {
@@ -23,26 +53,56 @@ export default defineConfig({
           .replace(/<link rel="icon"[^>]*>/, `<link rel="icon" type="image/svg+xml" href="${favicon}" />`)
           .replace(/content="Vendure Admin Dashboard"/, 'content="AgroNex Admin Dashboard"')
           .replace(/content="Vendure"/, 'content="AgroNex"')
-          .replace(
-            '<head>',
-            `<head><base href="/">`,
-          )
+          .replace('<head>', `<head><base href="/">`)
           .replace(
             '</head>',
             `<title>AgroNex</title>
 <style>
   a[href="https://vendure.io/pricing"] { display: none !important; }
+  *:has(> a[href="https://vendure.io/pricing"]) { display: none !important; }
 </style>
 <script>
-  new MutationObserver(function() {
+(function() {
+  // Intercept document.title so any JS setting it to "Vendure" gets overridden
+  var _title = 'AgroNex';
+  Object.defineProperty(document, 'title', {
+    get: function() { return _title; },
+    set: function(v) {
+      _title = typeof v === 'string' ? v.replace(/\\bVendure\\b/g, 'AgroNex') : v;
+      var t = document.querySelector('title');
+      if (t) t.textContent = _title;
+    },
+    configurable: true,
+  });
+
+  function cleanup() {
+    // Remove Vendure branding injected styles
     var s = document.getElementById('vendure-branding-style');
-    if (s) {
-      s.remove();
-      document.querySelectorAll('[data-vendure-branding]').forEach(function(el) {
-        el.style.setProperty('display', 'none', 'important');
+    if (s) s.remove();
+    document.querySelectorAll('[data-vendure-branding]').forEach(function(el) {
+      el.style.setProperty('display', 'none', 'important');
+    });
+
+    // Hide Platform & Cloud link and its container
+    document.querySelectorAll('a[href="https://vendure.io/pricing"]').forEach(function(a) {
+      var node = a;
+      // Walk up until we find a node whose only meaningful child is this link
+      while (node.parentElement) {
+        var p = node.parentElement;
+        if (p.children.length === 1) { node = p; } else { break; }
+      }
+      node.style.setProperty('display', 'none', 'important');
+      // Hide adjacent separators to avoid visual gaps
+      [node.previousElementSibling, node.nextElementSibling].forEach(function(sib) {
+        if (sib && (sib.getAttribute('role') === 'separator' || sib.tagName === 'HR')) {
+          sib.style.setProperty('display', 'none', 'important');
+        }
       });
-    }
-  }).observe(document.documentElement, { childList: true, subtree: true });
+    });
+  }
+
+  new MutationObserver(cleanup).observe(document.documentElement, { childList: true, subtree: true });
+})();
 </script></head>`,
           );
       },

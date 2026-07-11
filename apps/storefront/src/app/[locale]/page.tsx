@@ -4,7 +4,8 @@ import {getRouteLocale} from "@/i18n/server";
 import {HeroSection} from "@/components/layout/hero-section";
 import {FeaturedProducts} from "@/components/commerce/featured-products";
 import {SITE_NAME, SITE_URL, buildCanonicalUrl} from "@/lib/metadata";
-import {BadgeCheck, Tag, Zap} from "lucide-react";
+import {BadgeCheck, Tag, Zap, Mail, Phone} from "lucide-react";
+import {Link} from '@/i18n/navigation';
 import {getTranslations} from 'next-intl/server';
 import {toOgLocale} from '@/i18n/locale-utils';
 
@@ -67,6 +68,38 @@ export default async function Home() {
                             </div>
                         ))}
                     </div>
+                </div>
+            </section>
+            <section className="py-16 md:py-24">
+                <div className="container mx-auto px-4 max-w-3xl text-center">
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
+                        Get in Touch
+                    </h2>
+                    <p className="text-muted-foreground mb-10">
+                        Have a question or want to try our platform? Reach out directly.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                        <a
+                            href="tel:+923191902669"
+                            className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-border bg-card hover:bg-accent transition-colors text-sm font-medium"
+                        >
+                            <Phone className="w-4 h-4 text-primary" />
+                            +92 319 190 2669
+                        </a>
+                        <a
+                            href="mailto:abdullatifnizamani517@gmail.com"
+                            className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-border bg-card hover:bg-accent transition-colors text-sm font-medium"
+                        >
+                            <Mail className="w-4 h-4 text-primary" />
+                            abdullatifnizamani517@gmail.com
+                        </a>
+                    </div>
+                    <Link
+                        href="/contact"
+                        className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4 transition-colors"
+                    >
+                        View all contact options
+                    </Link>
                 </div>
             </section>
         </div>

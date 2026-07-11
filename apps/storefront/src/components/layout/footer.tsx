@@ -120,6 +120,14 @@ export async function Footer() {
                                     {t('dealerLogin')}
                                 </NavigationLink>
                             </li>
+                            <li>
+                                <NavigationLink
+                                    href="/contact"
+                                    className="hover:text-foreground transition-colors"
+                                >
+                                    {t('contact')}
+                                </NavigationLink>
+                            </li>
                         </ul>
                     </div>
                 </div>
