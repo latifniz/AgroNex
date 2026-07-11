@@ -144,7 +144,7 @@ export const config: VendureConfig = {
           : undefined,
     }),
     DefaultJobQueuePlugin,
-    DefaultSearchPlugin,
+    DefaultSearchPlugin.init({ indexCurrencyCode: true }),
     ExamplePlugin,
     FlatRateShippingPlugin,
     PaymentsPlugin,
