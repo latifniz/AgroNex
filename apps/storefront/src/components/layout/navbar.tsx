@@ -11,8 +11,11 @@ import {SearchInput} from '@/components/layout/search-input';
 import {NavbarUserSkeleton} from '@/components/shared/skeletons/navbar-user-skeleton';
 import {SearchInputSkeleton} from '@/components/shared/skeletons/search-input-skeleton';
 import {ChannelSwitcher} from '@/components/layout/navbar/channel-switcher';
+import {cookies} from 'next/headers';
 
-export function Navbar() {
+export async function Navbar() {
+    const cookieStore = await cookies();
+    const channelToken = cookieStore.get('agronex-channel')?.value ?? null;
     return (
         <header className="fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-md bg-background/80">
             <div className="container mx-auto px-4">
@@ -21,8 +24,8 @@ export function Navbar() {
                         <Suspense>
                             <MobileNavWrapper />
                         </Suspense>
-                        <NavigationLink href="/" className="text-xl font-bold">
-                            <Image src="/agronex.svg" alt="AgroNex" width={160} height={40} priority className="h-10 w-auto dark:invert" />
+                        <NavigationLink href="/">
+                            <Image src="/agronex.svg" alt="AgroNex" width={160} height={36} priority className="dark:invert" style={{height: '44px', width: 'auto'}} />
                         </NavigationLink>
                         <nav className="hidden md:flex items-center gap-6">
                             <Suspense>
@@ -43,7 +46,7 @@ export function Navbar() {
                             <ThemeSwitcher />
                         </Suspense>
                         <Suspense>
-                            <ChannelSwitcher />
+                            <ChannelSwitcher initialChannel={channelToken} />
                         </Suspense>
                         <Suspense>
                             <NavbarCart/>

@@ -7,19 +7,11 @@ import { toast } from 'sonner';
 
 const CHANNEL_COOKIE = 'agronex-channel';
 
-export function ChannelSwitcher() {
-    const [channel, setChannel] = useState<string | null>(null);
+export function ChannelSwitcher({ initialChannel }: { initialChannel: string | null }) {
+    const [channel, setChannel] = useState<string | null>(initialChannel);
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const router = useRouter();
-
-    useEffect(() => {
-        const value = document.cookie
-            .split(';')
-            .find(c => c.trim().startsWith(`${CHANNEL_COOKIE}=`))
-            ?.split('=')[1];
-        setChannel(value ?? null);
-    }, []);
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
