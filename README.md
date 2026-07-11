@@ -41,7 +41,7 @@ A B2B agri-input commerce platform built on [Vendure](https://www.vendure.io) as
 - Contact page and homepage contact section
 
 ### Admin Dashboard
-- Custom-branded (AgroNex) — Vendure upsell UI removed
+- AgroNex branding throughout
 - Low stock bell alert in sidebar
 - Custom product fields: crop type, season, registration number
 - Custom variant fields: weight, packaging type, MOQ, low stock threshold
@@ -152,7 +152,7 @@ nx g vendure-nx:vendure-plugin-generator --name=MyPlugin --uiExtension=true
 ## Contact
 
 Built by [Abdul Latif Nizamani](https://linkedin.com/in/abdullatifniz)
-— [abdullatifnizamani517@gmail.com](mailto:abdullatifnizamani517@gmail.com) · +92 319 190 2669
+— [abdullatifnizamani517@gmail.com](mailto:abdullatifnizamani517@gmail.com)
 
 ---
 
