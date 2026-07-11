@@ -13,6 +13,16 @@ export function ChannelSwitcher({ initialChannel }: { initialChannel: string | n
     const ref = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
+    // Client-side fallback: picks up the cookie if server didn't have it (e.g. set mid-session)
+    useEffect(() => {
+        if (channel) return;
+        const value = document.cookie
+            .split(';')
+            .find(c => c.trim().startsWith(`${CHANNEL_COOKIE}=`))
+            ?.split('=')[1];
+        if (value) setChannel(value);
+    }, [channel]);
+
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (ref.current && !ref.current.contains(e.target as Node)) {
