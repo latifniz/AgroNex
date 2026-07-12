@@ -107,6 +107,12 @@ export default defineConfig({
           );
       },
     },
+    {
+      name: 'vercel-analytics',
+      transformIndexHtml(html: string) {
+        return html.replace('</body>', '<script defer src="/_vercel/insights/script.js"></script></body>');
+      },
+    },
     vendureDashboardPlugin({
       tempCompilationDir: join(__dirname, './__vendure-dashboard-temp'),
       vendureConfigPath: pathToFileURL(

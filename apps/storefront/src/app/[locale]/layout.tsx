@@ -14,6 +14,7 @@ import {Footer} from "@/components/layout/footer";
 import {ChannelPicker} from "@/components/layout/channel-picker";
 import {ThemeProvider} from "@/components/providers/theme-provider";
 import {SITE_NAME, SITE_URL} from "@/lib/metadata";
+import {Analytics} from '@vercel/analytics/react';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -104,6 +105,7 @@ export default async function LocaleLayout({children}: {children: React.ReactNod
                             <Footer/>
                         </Suspense>
                         <Toaster/>
+                        <Analytics />
                         <Suspense fallback={null}>
                             <ChannelPicker />
                         </Suspense>
