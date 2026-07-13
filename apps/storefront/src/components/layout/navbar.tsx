@@ -24,8 +24,8 @@ export async function Navbar() {
                         <Suspense>
                             <MobileNavWrapper />
                         </Suspense>
-                        <NavigationLink href="/">
-                            <Image src="/agronex.svg" alt="AgroNex" width={196} height={44} priority unoptimized className="dark:invert" style={{width: '196px', height: '44px'}} />
+                        <NavigationLink href="/" className="shrink-0">
+                            <Image src="/agronex.svg" alt="AgroNex" width={196} height={44} priority unoptimized className="dark:invert" style={{width: '196px', height: '44px', maxWidth: 'none'}} />
                         </NavigationLink>
                         <nav className="hidden md:flex items-center gap-6">
                             <Suspense>
