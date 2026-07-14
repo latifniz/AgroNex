@@ -12,7 +12,8 @@
     "dev:dashboard": "nx run admin-dashboard:serve",
     "build": "nx run-many --target=build --projects=server,admin-dashboard,worker",
     "build:dashboard": "nx run admin-dashboard:build",
-    "db:populate": "nx run server:populate"
+    "db:populate": "nx run server:populate",
+    "seed:channel": "node -r @swc-node/register tools/scripts/seed-channel.ts"
   },
   "private": true,
   "devDependencies": {
