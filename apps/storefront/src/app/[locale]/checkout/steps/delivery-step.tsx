@@ -68,9 +68,7 @@ export default function DeliveryStep({ onComplete }: DeliveryStepProps) {
                   <div>
                     <p className="font-medium">{method.name}</p>
                     {method.description && (
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {method.description}
-                      </p>
+                      <p className="text-sm text-muted-foreground mt-1" dangerouslySetInnerHTML={{__html: method.description}} />
                     )}
                   </div>
                 </div>
