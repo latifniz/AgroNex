@@ -13,6 +13,11 @@ export function ChannelSwitcher({ initialChannel }: { initialChannel: string | n
     const ref = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
+    // Sync state when server prop updates (e.g. after router.refresh() post channel selection)
+    useEffect(() => {
+        if (initialChannel) setChannel(initialChannel);
+    }, [initialChannel]);
+
     // Client-side fallback: picks up the cookie if server didn't have it (e.g. set mid-session)
     useEffect(() => {
         if (channel) return;
